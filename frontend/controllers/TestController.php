@@ -1,72 +1,160 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: huang
- * Date: 2019/1/7
- * Time: 23:47
- */
 
 namespace frontend\controllers;
 
-
-use frontend\models\Teacher;
-use frontend\models\User;
 use Yii;
+use frontend\models\Test;
+use frontend\models\TestSearch;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
+/**
+ * TestController implements the CRUD actions for Test model.
+ */
 class TestController extends Controller
 {
-//    public function actionIndex(){
-//        $model = new User();
-//        $model->username = 'admin';
-////        $pass = \Yii::$app->security->generatePasswordHash('123');
-////        var_dump($pass);exit;
-//        $model->password_hash = \Yii::$app->security->generatePasswordHash('123');
-//        $model->auth_key = '123';
-//        $model->email = 'admin@qq.com';
-//        $model->created_at = time();
-//        $model->updated_at = time();
-//        $model->status = 10;
-//        $model->save();
-//        echo 1;
-//    }
-    public function actionSession(){
-        var_dump(date('Y-m-d H:i:s',time()));exit;
-        echo "<pre>";
-        var_dump($user = \Yii::$app->user->identity->username);
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
-    public function actionIndex(){
+    /**
+     * Lists all Test models.
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        $searchModel = new TestSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-       return $this->renderPartial('index');
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
-    public function actionSearch(){
-
-        return $this->render('search');
+    /**
+     * Displays a single Test model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
     }
 
-    public function actionAjax(){
-        return $this->render('ajax');
-    }
+    /**
+     * Creates a new Test model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new Test();
 
-    public function actionData($q){
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $out = ['results' => ['id' => '', 'text' => '']];
-        if (!$q) {
-            return $out;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['index']);
         }
 
-        $data = Teacher::find()
-            ->select('teacher_id, name as text')
-            ->andFilterWhere(['like', 'name', $q])
-            ->limit(50)
-            ->asArray()
-            ->all();
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
 
-        $out['results'] = array_values($data);
+    /**
+     * Updates an existing Test model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
 
-        return $out;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->renderAjax('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Deletes an existing Test model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Test model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Test the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Test::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionCandidate($id){
+        echo '生成考号';exit;
+
+//        $model = new Ttest();
+//
+//        $list = $model -> makeCandidate($id);
+//
+//
+//        if($list){
+//
+//            $searchModel = new TkaohaoSearch();
+//            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//            return $this->render('/tkaohao/index',[
+//                'searchModel' => $searchModel,
+//                'dataProvider' => $dataProvider,
+//            ]);
+//        }else{
+//            return $this->actionIndex();
+//        }
+
+    }
+
+    public function actionAudit($id){
+        $model = Test::find()->where(['id' => $id])->one();
+        $model->status = 2;
+        if (!$model->save()){
+            throw new ForbiddenHttpException('操作失败，原因未知');
+        }
+       return $this->redirect(['index']);
     }
 
 }

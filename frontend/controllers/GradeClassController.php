@@ -3,7 +3,9 @@
 namespace frontend\controllers;
 
 use ciniran\excel\SaveExcel;
+use frontend\models\Class0;
 use frontend\models\Course;
+use frontend\models\Grade;
 use Yii;
 use frontend\models\GradeClass;
 use frontend\models\GradeClassSearch;
@@ -146,12 +148,11 @@ class GradeClassController extends Controller
     public function actionExport($id){
         $model = new GradeClass();
         $info = $this->findModel($id);
-//        echo "<pre>";
-//        var_dump($info);exit;
         $data = $model->getExportData($info);
         $excel = new SaveExcel([
             'array' => $data,
             'headerDataArray' => ['节数\周数','星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
+            'fileName' => (Grade::find()->where(['id'=>$info->grade])->one())->the.'届'.(Class0::find()->where(['id'=>$info->banji])->one())->name.'课表',
         ]);
         $excel->arrayToExcel();
     }

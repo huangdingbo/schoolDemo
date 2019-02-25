@@ -1,64 +1,122 @@
-是真的SB！！！！黄定波是个大撒比
-<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
-<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<style>
-    .table_box{width: 1000px}
-    .filter_box{display: flex;position: absolute;width: 300px;height: 400px;z-index: 2;   top:50%;
-        left: 50%;transform: translate(-50%,-50%);border: 1px solid black}
+<?php
 
-</style>
-<div class="table_box">
-    <table border="1" class="table">
-        <thead>
-            <tr>
-                <th>节数\周数</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>1</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            <tr>
-                <th>2</th><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            <tr>
-                <th>3</th><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            <tr>
-                <th>4</th><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            <tr>
-                <th>5</th><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            <tr>
-                <th>6</th><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            <tr>
-                <th>7</th><th></th><th></th><th></th><th></th><th></th><th></th>
-            </tr>
+use yii\bootstrap\Modal;
+use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\helpers\Url;
 
-        </tbody>
+/* @var $this yii\web\View */
+/* @var $searchModel frontend\models\TestSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
-    </table>
+$this->title = '考试信息管理';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+<div class="test-index">
+
+
+    <p>
+        <?= Html::a('发布考试', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            'test_num',
+            'test_name',
+            [
+                'attribute' => 'grade_num',
+                'label' => '届',
+                'value' => 'grade0.the',
+                'filter' => \frontend\models\Grade::find()
+                    ->select('the,id')
+                    ->indexBy('id')
+                    ->column(),
+            ],
+            [
+                'attribute' => 'status',
+                'label' => '状态',
+                'value' => function($dataProvider){
+                    return $dataProvider->status == 1 ? '正在进行' : '已结束';
+                },
+                'contentOptions' => function($model){
+                    return $model->status == 1 ? ['class' => 'bg-danger'] : ['class' => 'bg-success'];
+                },
+                'filter' => array('1' => '正在进行' ,'2' => '已结束')
+            ],
+            [
+                'attribute' => 'type',
+                'label' => '类型',
+                'value' => function($model){
+                    return $model->type == 1 ? '理科' : '文科';
+                },
+                'filter' => array('1' => '理科' ,'0' => '文科')
+
+            ],
+            'insert_time',
+            'update_time',
+
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update}{candidate}{audit}{delete}',
+                'buttons' => [
+                    'update' => function ($url, $model, $key) {
+                        return Html::a('<span class = "glyphicon glyphicon-saved"></span>&nbsp;&nbsp;', $url, [
+                            'title' => Yii::t('yii','修改'),
+                            'aria-label' => Yii::t('yii','修改'),
+                            'data-toggle' => 'modal',
+                            'data-target' => '#update-modal',
+                            'class' => 'data-update',
+                            'data-id' => $key,
+                        ],['color'=>'red']);
+                    },
+                    'candidate' => function($url,$model,$key){
+                        $options = [
+                            'title' => Yii::t('yii','生成考号'),
+                            'aria-label' => Yii::t('yii','生成考号'),
+                            'data-confirm' => Yii::t('yii','你确定要生成本次考试考号吗？'),
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+//                            'controller'=>'tkaohao',
+                        ];
+                        return Html::a('<span class = "glyphicon glyphicon-check"></span> ',$url,$options);
+                    },
+                    'audit' => function($url,$model,$key){
+                        $options = [
+                            'title' => Yii::t('yii','结束考试'),
+                            'aria-label' => Yii::t('yii','结束考试'),
+                            'data-confirm' => Yii::t('yii','你确定要结束本次考试吗？'),
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+//                            'controller'=>'tkaohao',
+                        ];
+                        return Html::a('<span class = "glyphicon glyphicon-transfer"></span> ',$url,$options);
+                    }
+                ],
+            ],
+        ],
+    ]); ?>
+
+    <?php
+
+    // 更新操作
+    Modal::begin([
+        'id' => 'update-modal',
+        'header' => '<h4 class="modal-title" style="color: #0d6aad">修改</h4>',
+        'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">关闭</a>',
+    ]);
+    Modal::end();
+    $requestUpdateUrl = Url::toRoute('update');
+    $updateJs = <<<JS
+    $('.data-update').on('click', function () {
+        $.get('{$requestUpdateUrl}', { id: $(this).closest('tr').data('key') },
+            function (data) {
+                $('.modal-body').html(data);
+            }  
+        );
+    });
+JS;
+    $this->registerJs($updateJs);
+    ?>
 </div>
-<div class="filter_box">
-    <div class="filter_left">
-        <div class="title">分组</div>
-        <div class="list">
-            <div class="list_item">1</div>
-            <div class="list_item">1</div>
-            <div class="list_item">1</div>
-        </div>
-    </div>
-    <div class="filter_right">
-
-    </div>
-</div>
-<script >
-    $('table tbody td').click(function () {
-        $('.filter_box').show();
-    })
-
-</script>

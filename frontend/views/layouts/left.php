@@ -168,9 +168,7 @@
                                 'icon' => 'circle-o',
                                 'url' => '#',
                                 'items' => [
-                                    ['label' => '课程管理', 'icon' => 'circle-o', 'url' => '#',],
-                                    ['label' => '排课', 'icon' => 'circle-o', 'url' => '#',],
-                                    ['label' => '查看课表', 'icon' => 'circle-o', 'url' => '#',],
+                                    ['label' => '课程信息管理', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['grade-class/index']),],
                                     [
                                         'label' => '其他待配置',
                                         'icon' => 'circle-o',
@@ -182,6 +180,25 @@
                                     ],
                                 ],
                             ],
+
+                            [
+                                'label' => '考试管理',
+                                'icon' => 'circle-o',
+                                'url' => '#',
+                                'items' => [
+                                    ['label' => '考试信息管理', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['grade-class/index']),],
+                                    [
+                                        'label' => '其他待配置',
+                                        'icon' => 'circle-o',
+                                        'url' => '#',
+                                        'items' => [
+                                            ['label' => '其他待配置', 'icon' => 'circle-o', 'url' => '#',],
+                                            ['label' => '其他待配置', 'icon' => 'circle-o', 'url' => '#',],
+                                        ],
+                                    ],
+                                ],
+                            ],
+
                         ],
                     ],
                 ],
