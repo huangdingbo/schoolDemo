@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Kaohao;
+use frontend\models\TestForm;
 use Yii;
 use frontend\models\Test;
 use frontend\models\TestSearch;
@@ -127,24 +129,34 @@ class TestController extends Controller
     }
 
     public function actionCandidate($id){
-        echo '生成考号';exit;
+        $testInfo = Test::findOne(['id'=>$id]);
 
-//        $model = new Ttest();
-//
-//        $list = $model -> makeCandidate($id);
-//
-//
-//        if($list){
-//
-//            $searchModel = new TkaohaoSearch();
-//            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//            return $this->render('/tkaohao/index',[
-//                'searchModel' => $searchModel,
-//                'dataProvider' => $dataProvider,
-//            ]);
-//        }else{
-//            return $this->actionIndex();
-//        }
+        $model = new TestForm();
+
+        $postData = Yii::$app->request->post();
+
+
+        if ($model->load($postData) && $model->validate()){
+            Kaohao::deleteAll(['test_num'=>$testInfo->test_num]);
+
+//            if (Kaohao::find()->where(['test_num'=>$testInfo->test_num])->count()){
+//                Yii::$app->session->setFlash('warning','本次考号已存在，请勿重复操作');
+//                return $this->redirect(['kaohao/index']);
+//            }
+            $modelTest = new Test();
+            if ($modelTest->test_num == 0){
+                $list = $modelTest->getCandData($testInfo);
+               if ($modelTest->insertCandData($list)){
+
+                   Yii::$app->session->setFlash('success','考号生成成功');
+                   return $this->redirect(['kaohao/index']);
+               }
+            }
+        }
+
+      return $this->render('cnad',[
+          'model' => $model
+      ]);
 
     }
 

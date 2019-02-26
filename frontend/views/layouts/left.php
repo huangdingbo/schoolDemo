@@ -186,7 +186,9 @@
                                 'icon' => 'circle-o',
                                 'url' => '#',
                                 'items' => [
-                                    ['label' => '考试信息管理', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['grade-class/index']),],
+                                    ['label' => '考试信息管理', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['test/index']),],
+                                    ['label' => '考场设置', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['room/index']),],
+                                    ['label' => '考号管理', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['kaohao/index']),],
                                     [
                                         'label' => '其他待配置',
                                         'icon' => 'circle-o',

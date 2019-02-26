@@ -141,6 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'id' => 'update-modal',
         'header' => '<h4 class="modal-title" style="color: #0d6aad">修改</h4>',
         'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">关闭</a>',
+        'size' => 'modal-lg',
     ]);
     Modal::end();
     $requestUpdateUrl = Url::toRoute('update');
@@ -163,6 +164,7 @@ JS;
         'id' => 'view-modal',
         'header' => '<h4 class="modal-title" style="color: #0d6aad">查看</h4>',
         'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">关闭</a>',
+        'size' => 'modal-lg',
     ]);
     Modal::end();
     $requestViewUrl = Url::toRoute('view');
