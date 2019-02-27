@@ -17,7 +17,7 @@ class KaohaoSearch extends Kaohao
     public function rules()
     {
         return [
-            [['id', 'seat_num', 'type'], 'integer'],
+            [['id', 'seat_num', 'type', 'order'], 'integer'],
             [['test_num', 'test_name', 'student_id', 'cand_num', 'student_name', 'class_name', 'grade_name', 'exam_room', 'room_name', 'teachers'], 'safe'],
         ];
     }
@@ -62,6 +62,7 @@ class KaohaoSearch extends Kaohao
             'id' => $this->id,
             'seat_num' => $this->seat_num,
             'type' => $this->type,
+            'order' => $this->order,
         ]);
 
         $query->andFilterWhere(['like', 'test_num', $this->test_num])

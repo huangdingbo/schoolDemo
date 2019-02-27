@@ -113,6 +113,7 @@ class Test extends \yii\db\ActiveRecord
                     $studentList[$count]['teachers'] = $item['teachers'];
                     $studentList[$count]['seat_num'] = $i+1;
                     $studentList[$count]['exam_room'] = $item['location'];
+                    $studentList[$count]['order'] = $count;
                     $count++;
                 }
             }
@@ -139,6 +140,7 @@ class Test extends \yii\db\ActiveRecord
                 'teachers' => $item['teachers'],
                 'seat_num' => $item['seat_num'],
                 'type' => $item['type'],
+                'order' => $item['order']
             ])->execute();
             if (!$result){
                 throw new ForbiddenHttpException('操作失败');

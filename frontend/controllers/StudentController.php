@@ -43,6 +43,7 @@ class StudentController extends Controller
 
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         if (isset($searchCondition["StudentSearch"]["isExport"]) && $searchCondition["StudentSearch"]["isExport"] == 1){

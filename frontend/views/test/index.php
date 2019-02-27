@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update}{candidate}{audit}{delete}',
+                'template' => '{update}{candidate}{entry}{audit}{delete}',
                 'buttons' => [
                     'update' => function ($url, $model, $key) {
                         return Html::a('<span class = "glyphicon glyphicon-saved"></span>&nbsp;&nbsp;', $url, [
@@ -80,7 +80,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-pjax' => '0',
 //                            'controller'=>'tkaohao',
                         ];
-                        return Html::a('<span class = "glyphicon glyphicon-check"></span> ',$url,$options);
+                        return Html::a('<span class = "glyphicon glyphicon-check  "></span>  ',$url,$options);
+                    },
+                    'entry' => function($url,$model,$key){
+                        $options = [
+                            'title' => Yii::t('yii','录入成绩'),
+                            'aria-label' => Yii::t('yii','录入成绩'),
+                            'data-confirm' => Yii::t('yii','你确定要录入成绩本次考试成绩吗？'),
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                            'controller'=>'score',
+                        ];
+                        return Html::a('<span class = "glyphicon glyphicon-pencil"></span>   ',$url,$options);
                     },
                     'audit' => function($url,$model,$key){
                         $options = [
@@ -91,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'data-pjax' => '0',
 //                            'controller'=>'tkaohao',
                         ];
-                        return Html::a('<span class = "glyphicon glyphicon-transfer"></span> ',$url,$options);
+                        return Html::a('<span class = "glyphicon glyphicon-transfer"></span>  ',$url,$options);
                     }
                 ],
             ],

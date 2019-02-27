@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use frontend\models\Kaohao;
+use frontend\models\Score;
+use frontend\models\ScoreSearch;
 use frontend\models\TestForm;
 use Yii;
 use frontend\models\Test;
@@ -167,6 +169,35 @@ class TestController extends Controller
             throw new ForbiddenHttpException('操作失败，原因未知');
         }
        return $this->redirect(['index']);
+    }
+
+    public function actionEntry($id){
+        $queryParams = Yii::$app->request->queryParams;
+        //选择录入成绩，先根据考试信息插入成绩表基本信息
+        $searchModel = new ScoreSearch();
+        //考试信息
+        $testInfo = $searchModel->getTeatInfo($id);
+        //学生信息
+        $studentList = $searchModel->getStudentList($testInfo);
+        if ((Score::findOne(['test_num' => $testInfo->test_num] ))){
+
+//            Yii::$app->session->setFlash('warning','本次考试学生基本信息已存在，请在下方录入！');
+
+        }else{
+            //插入成绩表学生基础信息
+            $searchModel->insertBaseData($studentList,$testInfo->type);
+        }
+
+        $queryParams['ScoreSearch']['test_num'] = $testInfo->test_num;
+
+        $dataProvider = $searchModel->search($queryParams);
+        $list = $dataProvider->getModels();
+        return $this->render('/score/entry',[
+            'searchModel' => $searchModel,
+            'list' => $list,
+            'testInfo' => $testInfo,
+            'dataProvider' => $dataProvider
+        ]);
     }
 
 }

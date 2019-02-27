@@ -20,6 +20,7 @@ use Yii;
  * @property int $type 类型，1理科，2文科
  * @property string $room_name 考场名
  * @property string $teachers 监考老师
+ * @property int $order 排序
  */
 class Kaohao extends \yii\db\ActiveRecord
 {
@@ -37,13 +38,12 @@ class Kaohao extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['seat_num', 'type'], 'integer'],
-            [['room_name', 'teachers'], 'required'],
+            [['seat_num', 'type', 'order'], 'integer'],
+            [['room_name', 'teachers', 'order'], 'required'],
             [['test_num', 'student_name', 'room_name'], 'string', 'max' => 20],
-            [['test_name', 'cand_num', 'teachers'], 'string', 'max' => 50],
+            [['test_name', 'cand_num', 'exam_room', 'teachers'], 'string', 'max' => 50],
             [['student_id', 'class_name'], 'string', 'max' => 10],
-            [['grade_name'], 'string', 'max' => 4],
-            [['exam_room'], 'string', 'max' => 2],
+            [['grade_name'], 'string', 'max' => 6],
         ];
     }
 
@@ -66,6 +66,7 @@ class Kaohao extends \yii\db\ActiveRecord
             'type' => '类型',
             'room_name' => '考场名',
             'teachers' => '监考老师',
+            'order' => '排序',
         ];
     }
 }
