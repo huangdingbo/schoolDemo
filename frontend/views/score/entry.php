@@ -21,7 +21,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php  echo $this->render('_search', ['model' => $searchModel,'testInfo' => $testInfo]); ?>
 
-<form class="form-group" action="index.php?r=score/create&test_num=<?=$testInfo->test_num;?>" method="post" onkeydown="if(event.keyCode==13)return false">
+    <?php
+        $page = Yii::$app->request->get('page') ? Yii::$app->request->get('page') : 1;
+        $per_page = 15;
+    ?>
+
+<form class="form-group" action="index.php?r=score/create&test_num=<?=$testInfo->test_num;?>&id=<?=Yii::$app->request->get('id');?>&page=<?=$page?>&per-page=<?=$per_page?>" method="post" onkeydown="if(event.keyCode==13)return false">
     <table id="table" class="table">
         <tr class="active">
             <td>考号</td>

@@ -30,57 +30,57 @@
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
-                    ['label' => '智慧校园Demo', 'options' => ['class' => 'header']],
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
-                    [
-                        'label' => 'Some tools',
-                        'icon' => 'share',
-                        'url' => '#',
-                        'items' => [
-                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
-                            [
-                                'label' => 'Level One',
-                                'icon' => 'circle-o',
-                                'url' => '#',
-                                'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
-                                    [
-                                        'label' => 'Level Two',
-                                        'icon' => 'circle-o',
-                                        'url' => '#',
-                                        'items' => [
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
+                    ['label' => Yii::$app->params['appName'], 'options' => ['class' => 'header']],
+//                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+//                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+//                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+//                    [
+//                        'label' => 'Some tools',
+//                        'icon' => 'share',
+//                        'url' => '#',
+//                        'items' => [
+//                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
+//                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+//                            [
+//                                'label' => 'Level One',
+//                                'icon' => 'circle-o',
+//                                'url' => '#',
+//                                'items' => [
+//                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
+//                                    [
+//                                        'label' => 'Level Two',
+//                                        'icon' => 'circle-o',
+//                                        'url' => '#',
+//                                        'items' => [
+//                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+//                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+//                                        ],
+//                                    ],
+//                                ],
+//                            ],
+//                        ],
+//                    ],
                     /*成绩管理模块*/
                     [
                         'label' => '成绩管理模块',
                         'icon' => 'share',
                         'url' => '#',
                         'items' => [
-                            ['label' => '学生成绩查询', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => '录入学生成绩', 'icon' => 'dashboard', 'url' => ['/debug'],],
+                            ['label' => '学生成绩查询', 'icon' => 'file-code-o', 'url' => \yii\helpers\Url::to(['score/index']),],
+                            ['label' => '录入学生成绩', 'icon' => 'circle-o', 'url' => \yii\helpers\Url::to(['test/index']),],
                             [
-                                'label' => 'Level One',
+                                'label' => '其他待配置',
                                 'icon' => 'circle-o',
                                 'url' => '#',
                                 'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
+                                    ['label' => '其他待配置', 'icon' => 'circle-o', 'url' => '#',],
                                     [
-                                        'label' => 'Level Two',
+                                        'label' => '其他待配置',
                                         'icon' => 'circle-o',
                                         'url' => '#',
                                         'items' => [
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+                                            ['label' => '其他待配置', 'icon' => 'circle-o', 'url' => '#',],
+                                            ['label' => '其他待配置', 'icon' => 'circle-o', 'url' => '#',],
                                         ],
                                     ],
                                 ],

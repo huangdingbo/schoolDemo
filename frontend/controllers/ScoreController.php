@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Student;
 use Yii;
 use frontend\models\Score;
 use frontend\models\ScoreSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -41,6 +43,8 @@ class ScoreController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'type' => $searchModel->type,
+
         ]);
     }
 
@@ -52,8 +56,13 @@ class ScoreController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        $model = $this->findModel($id);
+
+        $img = (Student::find()->where(['student_id'=>$model->student_id])->one())->pic;
+
+        $model->img = $img;
+        return $this->renderAjax('view', [
+            'model' => $model,
         ]);
     }
 
@@ -64,6 +73,9 @@ class ScoreController extends Controller
      */
     public function actionCreate()
     {
+        $id = Yii::$app->request->get('id');
+        $page = Yii::$app->request->get('page') ? Yii::$app->request->get('page') : 1;
+        $per_page = 15;
         //接收成绩
         $list = Yii::$app->request->post();
         //更新成绩表
@@ -72,17 +84,10 @@ class ScoreController extends Controller
         //更新总分、校名、班名
         $testNum = Yii::$app->request->get('test_num');
         $model->calculateRank($testNum);
-        echo "<pre>";
-        var_dump(Yii::$app->request->post());exit;
-        $model = new Score();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        $url = Url::to(['test/entry','id'=>$id,'page'=>$page,'per-page'=>$per_page]);
+        Yii::$app->session->setFlash('success','成绩插入成功！');
+        return $this->redirect($url);
     }
 
     /**
@@ -97,10 +102,14 @@ class ScoreController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
-        return $this->render('update', [
+        $img = (Student::find()->where(['student_id'=>$model->student_id])->one())->pic;
+
+        $model->img = $img;
+
+        return $this->renderAjax('update', [
             'model' => $model,
         ]);
     }

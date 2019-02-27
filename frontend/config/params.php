@@ -2,7 +2,7 @@
 return [
     'defaultImg' =>'/uploads/images/warning1.png',
     'adminEmail' => 'admin@example.com',
-    'appName' => '智慧校园Demo',
+    'appName' => '智慧校园管理后台',
     'version' => 'demo-1.0',
     'ICP' => "<a href='http://www.miitbeian.gov.cn'>蜀ICP备18036906号</a>",
     // 图片服务器的域名设置，拼接保存在数据库中的相对地址，可通过web进行展示

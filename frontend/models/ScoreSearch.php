@@ -49,6 +49,10 @@ class ScoreSearch extends Score
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => ['pageSize' => 15], //设置分页条数
+            'sort' => [
+                'defaultOrder' => ['total' => 'SORT_DESC'], //排序
+//                'attributes' => ['id','title','authorName'], //设置那些字段可以排序
+            ],
         ]);
 
         $this->load($params);
@@ -59,6 +63,10 @@ class ScoreSearch extends Score
             return $dataProvider;
         }
 
+        //默认理科
+        if ($this->type == ''){
+            $this->type = 1;
+        }
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,

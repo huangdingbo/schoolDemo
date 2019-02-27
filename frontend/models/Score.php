@@ -41,6 +41,7 @@ class Score extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public $img;
     public static function tableName()
     {
         return 'score';
@@ -60,6 +61,7 @@ class Score extends \yii\db\ActiveRecord
             [['test_name'], 'string', 'max' => 40],
             [['grade'], 'string', 'max' => 8],
             [['banji'], 'string', 'max' => 5],
+            [['img'],'safe']
         ];
     }
 
@@ -93,6 +95,7 @@ class Score extends \yii\db\ActiveRecord
             'class_rank' => '班名',
             'school_rank' => '校名',
             'type' => '类型',
+            'img' => '照片',
             'insert_time' => '插入时间',
             'update_time' => '更新时间',
         ];
@@ -162,21 +165,35 @@ class Score extends \yii\db\ActiveRecord
 
 //            $oldScoreNum = $item['total'];
         }
-
         //班名
-//        config::dump($list);
         foreach ($list as $item){
             $banji = $item['banji'];
-            $classRank = Score::find()->where(['test_num'=>$testNum,'banji'=>$banji])->asArray()->all();
+            $classRank = Score::find()->where(['test_num'=>$testNum,'banji'=>$banji])->orderBy('total desc')->asArray()->all();
             foreach($classRank as $k => $value){
                 (new Query())->createCommand()->update('score',[
                     'class_rank' => ($k + 1)
                 ],['id' => $value['id']])->execute();
             }
-
-
         }
 
-        echo 1;exit;
+        return true;
+    }
+
+    public function beforeSave($insert)
+    {
+
+       $this->calculateRank($this->test_num);
+
+        if(parent::beforeSave($insert)){
+            if($insert){
+                $this->insert_time = date('Y-m-d H:i:s',time());
+                $this->update_time = date('Y-m-d H:i:s',time());
+            }else{
+                $this->update_time = date('Y-m-d H:i:s',time());
+            }
+            return true;
+        }else{
+            return false;
+        }
     }
 }
