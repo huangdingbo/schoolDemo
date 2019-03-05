@@ -134,4 +134,12 @@ class ScoreSearch extends Score
             ])->execute();
         }
     }
+
+    public function dealExportData($models){
+        foreach ($models as &$item){
+            $item->type = $item->type == 1 ? '理科' : '文科';
+        }
+
+        return $models;
+    }
 }

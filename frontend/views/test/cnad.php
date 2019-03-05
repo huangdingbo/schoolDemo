@@ -7,6 +7,7 @@ $form = \yii\bootstrap\ActiveForm::begin();
 
 $list = \frontend\models\Test::find()
     ->select('test_name,test_num')
+    ->where(['status'=>2,'grade_num'=>$grade])
     ->indexBy('test_num')
     ->orderBy('test_num desc')
     ->column();

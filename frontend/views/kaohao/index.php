@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="kaohao-index">
 
     <p>
-        <?= Html::a('导出学生信息', ['index',
+        <?= Html::a('导出考号信息', ['index',
             "KaohaoSearch[test_num]"=>isset($searchCondition["KaohaoSearch"]["test_num"]) ? $searchCondition["KaohaoSearch"]["test_num"] : '',
             "KaohaoSearch[test_name]"=>isset($searchCondition["KaohaoSearch"]["test_name"]) ? $searchCondition["KaohaoSearch"]["test_name"] : '',
             "KaohaoSearch[student_id]"=>isset($searchCondition["KaohaoSearch"]["student_id"]) ? $searchCondition["KaohaoSearch"]["student_id"] : '',
@@ -98,12 +98,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'exam_room',
                 'filter' => common\models\config::getLocationMap(),
             ],
+
             [
                 'attribute' => 'room_name',
                 'label' => '考场名',
                 'value' => 'room_name',
                 'filter' => \frontend\models\Room::find()
                     ->select('name,name')
+
                     ->indexBy('name')
                     ->orderBy('id asc')
                     ->column(),

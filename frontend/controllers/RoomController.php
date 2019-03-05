@@ -8,6 +8,7 @@ use Yii;
 use frontend\models\Room;
 use frontend\models\RoomSearch;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -37,6 +38,9 @@ class RoomController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->user->can('indexRoom')){
+            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+        }
         $searchModel = new RoomSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $locationMap = config::getLocationMap();
@@ -54,12 +58,12 @@ class RoomController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    public function actionView($id)
+//    {
+//        return $this->render('view', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
 
     /**
      * Creates a new Room model.
@@ -68,6 +72,9 @@ class RoomController extends Controller
      */
     public function actionCreate()
     {
+        if (!Yii::$app->user->can('createRoom')){
+            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+        }
         $model = new Room();
         $postData = Yii::$app->request->post();
         if ($postData){
@@ -96,6 +103,9 @@ class RoomController extends Controller
      */
     public function actionUpdate($id)
     {
+        if (!Yii::$app->user->can('updateRoom')){
+            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+        }
         $model = $this->findModel($id);
 
         $postData = Yii::$app->request->post();
@@ -131,6 +141,9 @@ class RoomController extends Controller
      */
     public function actionDelete($id)
     {
+        if (!Yii::$app->user->can('deleteRoom')){
+            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

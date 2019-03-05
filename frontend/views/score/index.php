@@ -14,9 +14,30 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="score-index">
 
-<!--    <p>-->
-<!--            --><?php //echo Html::a('导出学生成绩', ['create'], ['class' => 'btn btn-success']) ?>
-<!--    </p>-->
+    <p>
+            <?php echo Html::a('导出学生成绩', ['index',
+                "ScoreSearch[cand_id]"=>isset($searchCondition["ScoreSearch"]["cand_id"]) ? $searchCondition["ScoreSearch"]["cand_id"] : '',
+                "ScoreSearch[name]"=>isset($searchCondition["ScoreSearch"]["name"]) ? $searchCondition["ScoreSearch"]["name"] : '',
+                "ScoreSearch[test_name]"=>isset($searchCondition["ScoreSearch"]["test_name"]) ? $searchCondition["ScoreSearch"]["test_name"] : '',
+                "ScoreSearch[chinese]"=>isset($searchCondition["ScoreSearch"]["chinese"]) ? $searchCondition["ScoreSearch"]["chinese"] : '',
+                "ScoreSearch[grade]"=>isset($searchCondition["ScoreSearch"]["grade"]) ? $searchCondition["ScoreSearch"]["grade"] : '',
+                "ScoreSearch[banji]"=>isset($searchCondition["ScoreSearch"]["banji"]) ? $searchCondition["ScoreSearch"]["banji"] : '',
+                "ScoreSearch[duty]"=>isset($searchCondition["ScoreSearch"]["duty"]) ? $searchCondition["ScoreSearch"]["duty"] : '',
+                "ScoreSearch[math]"=>isset($searchCondition["ScoreSearch"]["math"]) ? $searchCondition["ScoreSearch"]["math"] : '',
+                "ScoreSearch[english]"=>isset($searchCondition["ScoreSearch"]["english"]) ? $searchCondition["ScoreSearch"]["english"] : '',
+                "ScoreSearch[physics]"=>isset($searchCondition["ScoreSearch"]["physics"]) ? $searchCondition["ScoreSearch"]["physics"] : '',
+                "ScoreSearch[chemistry]"=>isset($searchCondition["ScoreSearch"]["chemistry"]) ? $searchCondition["ScoreSearch"]["chemistry"] : '',
+                "ScoreSearch[biology]"=>isset($searchCondition["ScoreSearch"]["biology"]) ? $searchCondition["ScoreSearch"]["biology"] : '',
+                "ScoreSearch[politics]"=>isset($searchCondition["ScoreSearch"]["politics"]) ? $searchCondition["ScoreSearch"]["politics"] : '',
+                "ScoreSearch[history]"=>isset($searchCondition["ScoreSearch"]["history"]) ? $searchCondition["ScoreSearch"]["history"] : '',
+                "ScoreSearch[geography]"=>isset($searchCondition["ScoreSearch"]["geography"]) ? $searchCondition["ScoreSearch"]["geography"] : '',
+                "ScoreSearch[total]"=>isset($searchCondition["ScoreSearch"]["total"]) ? $searchCondition["ScoreSearch"]["total"] : '',
+                "ScoreSearch[class_rank]"=>isset($searchCondition["ScoreSearch"]["class_rank"]) ? $searchCondition["ScoreSearch"]["class_rank"] : '',
+                "ScoreSearch[school_rank]"=>isset($searchCondition["ScoreSearch"]["school_rank"]) ? $searchCondition["ScoreSearch"]["school_rank"] : '',
+                "ScoreSearch[type]"=>isset($searchCondition["ScoreSearch"]["type"]) ? $searchCondition["ScoreSearch"]["type"] : '',
+                "ScoreSearch[isExport]"=>'1',
+                ], ['class' => 'btn btn-success']) ?>
+    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -56,6 +77,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => '班级',
                 'value' => 'banji',
                 'filter' => \frontend\models\Class0::find()
+                    ->select('name,name')
+                    ->indexBy('name')
+                    ->orderBy('id asc')
+                    ->column(),
+            ],
+            [
+                'attribute' => 'test_room',
+                'label' => '考场',
+                'value' => 'test_room',
+                'filter' => \frontend\models\Room::find()
                     ->select('name,name')
                     ->indexBy('name')
                     ->orderBy('id asc')

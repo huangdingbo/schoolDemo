@@ -100,13 +100,19 @@ class Test extends \yii\db\ActiveRecord
             $count = 0;
             $studentNum = count($studentList);
 
+            $sum = 0;
+            foreach ($roomInfo as $s){
+                $sum += $s['num'];
+            }
+            if ($sum < $studentNum){
+                return false;
+            }
             foreach ($roomInfo as $item){
 
                 $num = $item['num'];
                 for ($i=0;$i<$num;$i++){
 
                     if ($count>=$studentNum){
-                        var_dump($count);
                         break;
                     }
                     $studentList[$count]['room_name'] = $item['name'];
@@ -124,12 +130,11 @@ class Test extends \yii\db\ActiveRecord
 
     }
 
-    public function insertCandData($list){
-
+    public function insertCandData($list,$testNum){
         foreach ($list as $item){
             $result = (new Query())->createCommand()->insert('kaohao',[
                 'student_id' => $item['student_id'],
-                'test_num' => $item['test_num'],
+                'test_num' => $testNum,
                 'test_name' => $item['test_name'],
                 'cand_num' => $item['test_id'],
                 'student_name' => $item['name'],
@@ -148,4 +153,47 @@ class Test extends \yii\db\ActiveRecord
         }
         return true;
     }
+    public function dealKaohao($kaohaoList,$testInfo){
+        foreach ($kaohaoList as &$item){
+            $item['test_num'] = $testInfo->test_num;
+            $item['test_name'] = $testInfo->test_name;
+            $item['test_id'] = $item['cand_num'];
+            $item['name'] = $item['student_name'];
+            $item['grade'] = $item['grade_name'];
+            $item['banji'] = $item['class_name'];
+        }
+
+        //排考试座位
+        $roomInfo = Room::find()->where(['grade'=>$testInfo->grade_num])->asArray()->all();
+
+        $count = 0;
+        $studentNum = count($kaohaoList);
+
+        $sum = 0;
+        foreach ($roomInfo as $s){
+            $sum += $s['num'];
+        }
+        if ($sum < $studentNum || $roomInfo == null){
+            return false;
+        }
+        foreach ($roomInfo as $sitem){
+
+            $num = $sitem['num'];
+            for ($i=0;$i<$num;$i++){
+
+                if ($count>=$studentNum){
+                    break;
+                }
+                $kaohaoList[$count]['room_name'] = $sitem['name'];
+                $kaohaoList[$count]['teachers'] = $sitem['teachers'];
+                $kaohaoList[$count]['seat_num'] = $i+1;
+                $kaohaoList[$count]['exam_room'] = $sitem['location'];
+                $kaohaoList[$count]['order'] = $count;
+                $count++;
+            }
+        }
+
+        return $kaohaoList;
+    }
+
 }

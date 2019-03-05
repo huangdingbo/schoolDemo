@@ -24,6 +24,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'banji')->textInput(['maxlength' => true,'disabled'=>true]) ?>
 
+    <?= $form->field($model, 'test_room')->textInput(['maxlength' => true,'disabled'=>true]) ?>
+
     <?= $form->field($model, 'type')->textInput(['disabled'=>true,'value'=> $model->type == 1 ? '理科' : '文科']) ?>
 
     <?= $form->field($model, 'chinese')->textInput() ?>

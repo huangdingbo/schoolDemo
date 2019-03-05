@@ -8,6 +8,7 @@ use frontend\models\Kaohao;
 use frontend\models\KaohaoSearch;
 use yii\data\Pagination;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -37,12 +38,18 @@ class KaohaoController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->user->can('indexCand')){
+            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+        }
         $searchModel = new KaohaoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         if (isset($searchCondition["KaohaoSearch"]["isExport"]) && $searchCondition["KaohaoSearch"]["isExport"] == 1){
+            if (!Yii::$app->user->can('exportCand')){
+                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+            }
             //导出不适应分页，把默认的20条改的很大
             $dataProvider->setPagination(new Pagination([
                 'defaultPageSize' => 1000000,
@@ -79,30 +86,30 @@ class KaohaoController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    public function actionView($id)
+//    {
+//        return $this->render('view', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
 
     /**
      * Creates a new Kaohao model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Kaohao();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionCreate()
+//    {
+//        $model = new Kaohao();
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('create', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Updates an existing Kaohao model.
@@ -111,18 +118,18 @@ class KaohaoController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('update', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Deletes an existing Kaohao model.
@@ -133,6 +140,9 @@ class KaohaoController extends Controller
      */
     public function actionDelete($id)
     {
+        if (!Yii::$app->user->can('deleteCand')){
+            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
