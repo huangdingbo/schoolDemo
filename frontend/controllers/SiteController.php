@@ -94,6 +94,7 @@ class SiteController extends Controller
         }
         $model = new AdminLoginForm(['scenario' => 'login']);
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
             return $this->goBack();
         } else {
             $model->password = '';

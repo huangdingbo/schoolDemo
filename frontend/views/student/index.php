@@ -166,7 +166,6 @@ JS;
     ?>
 
     <?php
-
     // 查看操作
     Modal::begin([
         'id' => 'view-modal',
