@@ -112,12 +112,7 @@ class CockpitController extends MyController
     }
 
     public function actionYearWire(){
-        $start = date('Y',time()).'-01-01 00:00:00';
-        $end = date('Y',time()).'-12-31 23:59:59';
 
-        $list = Score::find()->where(['total'])
-            ->andFilterWhere(['<=','insert_time',$end])
-            ->andFilterWhere(['>=','insert_time',$start]);
     }
 
     public function actionWheel(){
