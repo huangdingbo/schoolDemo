@@ -79,6 +79,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+////        var_dump(Yii::$app->user->id);exit;
+//        var_dump(Yii::$app->user);
+//        exit();
         return $this->render('index');
     }
 
@@ -94,9 +97,19 @@ class SiteController extends Controller
         }
         $model = new AdminLoginForm(['scenario' => 'login']);
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+//            var_dump(Yii::$app->request->post());
+//            var_dump($this->goBack());
+//            exit;
+//            var_dump(Yii::$app->user->id);exit;
+//            return $this->render('index');
+//            echo 111;exit;
+
+
 
             return $this->goBack();
         } else {
+//            var_dump($model->errors);
+//            echo 2222;exit;
             $model->password = '';
 
             return $this->render('login', [

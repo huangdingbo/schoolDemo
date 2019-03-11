@@ -65,8 +65,16 @@ $pic = isset($userModel) ? $userModel->pic : Yii::$app->request->getHostInfo().'
                         'icon' => 'cogs',
                         'url' => '#',
                         'items' => [
-                            ['label' => '我的工作台', 'icon' => 'user', 'url' => ['adminuser/index'],],
-                            ['label' => '校园案件管理', 'icon' => 'user', 'url' => ['adminuser/index'],],
+                            [
+                                'label' => '校园事件管理',
+                                'icon' => 'circle-o',
+                                'url' => '#',
+                                'items' => [
+                                    ['label' => '我的工作台', 'icon' => 'user', 'url' => ['cases/index'],],
+                                    ['label' => '校园事件概览', 'icon' => 'user', 'url' => ['cases/index'],],
+                                ],
+                            ],
+
                             ['label' => '教职工办公', 'icon' => 'user-plus', 'url' => ['/debug'],],
                         ],
                     ],
