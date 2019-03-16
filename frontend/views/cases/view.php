@@ -59,7 +59,7 @@ use yii\widgets\DetailView;
                     foreach ($list as $key => $item){
                         $str .= $item->date_time . ' -> ' .$item->process . "<br>";
                         $str .= "<b>图片：</b>".\yii\bootstrap\Html::img($item->pic,['width' => '120px','height' => '100px    '])."<br>";
-                        $str .= "<b>说明：</b>".$item->instructions."<br>";
+                        $str .= "<b>说明：</b>".$item->instructions;
                         $str .= "<hr>";
                     }
                     return $str;

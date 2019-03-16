@@ -9,7 +9,7 @@ use yii\helpers\Url;
 /* @var $searchModel frontend\models\CasesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = '我的事件';
+$this->title = '我的工作台';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cases-index">
@@ -23,6 +23,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
+            [
+                'attribute' => 'selectedType',
+                'label' => '模块',
+                'value' => function($dataProvider){
+                    if ($dataProvider->create_id == Yii::$app->user->id){
+                        return '由我创建';
+                    }
+                    if ($dataProvider->point_id == Yii::$app->user->id && $dataProvider->create_id != Yii::$app->user->id ){
+                        return '指派给我';
+                    }
+                },
+                'filter' => ['1' => '由我创建','2' => '指派给我'],
+            ],
             'case_num',
             [
                 'attribute' => 'type',
@@ -56,16 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}{point}{solve}{activation}{delete}',
                 'buttons' => [
-//                    'update' => function ($url, $model, $key) {
-//                        return Html::a('<span class = "glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;', $url, [
-//                            'title' => Yii::t('yii','修改'),
-//                            'aria-label' => Yii::t('yii','修改'),
-//                            'data-toggle' => 'modal',
-//                            'data-target' => '#update-modal',
-//                            'class' => 'data-update',
-//                            'data-id' => $key,
-//                        ],['color'=>'red']);
-//                    },
                     'view' => function ($url, $model, $key) {
                         return Html::a('<span class = "glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;', $url, [
                             'title' => Yii::t('yii','查看'),
@@ -110,27 +113,27 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-    <?php
-    // 更新操作
-    Modal::begin([
-        'id' => 'update-modal',
-        'header' => '<h4 class="modal-title" style="color: #0d6aad">修改</h4>',
-        'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">关闭</a>',
-        'size' => 'modal-lg',
-    ]);
-    Modal::end();
-    $requestUpdateUrl = Url::toRoute('update');
-    $updateJs = <<<JS
-    $('.data-update').on('click', function () {
-        $.get('{$requestUpdateUrl}', { id: $(this).closest('tr').data('key') },
-            function (data) {
-                $('.modal-body').html(data);
-            }  
-        );
-    });
-JS;
-    $this->registerJs($updateJs);
-    ?>
+<!--    --><?php
+//    // 更新操作
+//    Modal::begin([
+//        'id' => 'update-modal',
+//        'header' => '<h4 class="modal-title" style="color: #0d6aad">修改</h4>',
+//        'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">关闭</a>',
+//        'size' => 'modal-lg',
+//    ]);
+//    Modal::end();
+//    $requestUpdateUrl = Url::toRoute('update');
+//    $updateJs = <<<JS
+//    $('.data-update').on('click', function () {
+//        $.get('{$requestUpdateUrl}', { id: $(this).closest('tr').data('key') },
+//            function (data) {
+//                $('.modal-body').html(data);
+//            }
+//        );
+//    });
+//JS;
+//    $this->registerJs($updateJs);
+//    ?>
 
     <?php
     // 查看操作
@@ -163,10 +166,10 @@ JS;
         'size' => 'modal-lg',
     ]);
     Modal::end();
-    $requestViewUrl = Url::toRoute('point');
+    $requestPointUrl = Url::toRoute('point');
     $pointJs = <<<JS
     $('.data-point').on('click', function () {
-        $.get('{$requestViewUrl}', { id: $(this).closest('tr').data('key') },
+        $.get('{$requestPointUrl}', { id: $(this).closest('tr').data('key') },
             function (data) {
                 $('.modal-body').html(data);
             }  
@@ -184,37 +187,37 @@ JS;
         'size' => 'modal-lg',
     ]);
     Modal::end();
-    $requestViewUrl = Url::toRoute('solve');
-    $pointJs = <<<JS
+    $requestSolveUrl = Url::toRoute('solve');
+    $solveJs = <<<JS
     $('.data-solve').on('click', function () {
-        $.get('{$requestViewUrl}', { id: $(this).closest('tr').data('key') },
+        $.get('{$requestSolveUrl}', { id: $(this).closest('tr').data('key') },
             function (data) {
                 $('.modal-body').html(data);
             }  
         );
     });
 JS;
-    $this->registerJs($pointJs);
+    $this->registerJs($solveJs);
     ?>
     <?php
-    //解决操作
+    //激活操作
     Modal::begin([
         'id' => 'activation-modal',
-        'header' => '<h4 class="modal-title" style="color: #0d6aad">解决</h4>',
+        'header' => '<h4 class="modal-title" style="color: #0d6aad">激活</h4>',
         'footer' => '<a href="#" class="btn btn-primary" data-dismiss="modal">关闭</a>',
         'size' => 'modal-lg',
     ]);
     Modal::end();
-    $requestViewUrl = Url::toRoute('activation');
-    $pointJs = <<<JS
+    $requestActivationUrl = Url::toRoute('activation');
+    $activationJs = <<<JS
     $('.data-activation').on('click', function () {
-        $.get('{$requestViewUrl}', { id: $(this).closest('tr').data('key') },
+        $.get('{$requestActivationUrl}', { id: $(this).closest('tr').data('key') },
             function (data) {
                 $('.modal-body').html(data);
             }  
         );
     });
 JS;
-    $this->registerJs($pointJs);
+    $this->registerJs($activationJs);
     ?>
 </div>

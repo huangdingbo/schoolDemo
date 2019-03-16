@@ -14,11 +14,15 @@ class CasesSearch extends Cases
     /**
      * {@inheritdoc}
      */
+    public function attributes()
+    {
+        return array_merge(parent::attributes(),['selectedType']);
+    }
     public function rules()
     {
         return [
             [['id', 'type', 'status'], 'integer'],
-            [['case_num', 'title', 'description', 'pic', 'create_id', 'point_id'], 'safe'],
+            [['case_num', 'title', 'description', 'pic', 'create_id', 'point_id','selectedType'], 'safe'],
         ];
     }
 
@@ -42,11 +46,12 @@ class CasesSearch extends Cases
     {
         $pointId = \Yii::$app->user->id;
         $createId = \Yii::$app->user->id;
-        $query = Cases::find()->where(['or',"point_id = $pointId","create_id = $createId"]);
+        $query = Cases::find()->where(['or',"point_id = $pointId","create_id = $createId"])->orderBy('status asc');
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => ['pageSize' => 15], //设置分页条数
         ]);
 
         $this->load($params);
@@ -64,12 +69,23 @@ class CasesSearch extends Cases
             'status' => $this->status,
         ]);
 
+
         $query->andFilterWhere(['like', 'case_num', $this->case_num])
             ->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'pic', $this->pic])
             ->andFilterWhere(['like', 'create_id', $this->create_id])
             ->andFilterWhere(['like', 'point_id', $this->point_id]);
+
+        if ($this->selectedType == 1){
+            $query->andFilterWhere(['create_id' => \Yii::$app->user->id]);
+        }
+
+        if ($this->selectedType == 2){
+            $query->andFilterWhere(['!=','create_id',\Yii::$app->user->id])
+                    ->andFilterWhere(['point_id' => \Yii::$app->user->id]);
+        }
+
 
         return $dataProvider;
     }
