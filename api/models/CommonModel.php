@@ -79,6 +79,21 @@ class CommonModel extends Model
         ['350','0']
 
     ];
+    public static $getSingleScoreScale = [
+        ['max' => '150','min' => '140'],
+        ['max' => '140','min' =>'130'],
+        ['max' => '130','min' =>'120'],
+        ['max' => '120','min' =>'110'],
+        ['max' => '110','min' =>'100'],
+        ['max' => '100','min' =>'90'],
+        ['max' => '90','min' =>'80'],
+        ['max' => '80','min' =>'70'],
+        ['max' => '70','min' =>'60'],
+        ['max' => '60','min' =>'50'],
+        ['max' => '50','min' =>'40'],
+        ['max' => '40','min' =>'0'],
+
+    ];
 
     public static function getLastTestNum($testNum){
         //本次考试信息
@@ -109,6 +124,10 @@ class CommonModel extends Model
         }
         array_multisort($keysValue, $sort, $array);
         return $array;
+    }
+
+    public static function test(){
+        return 111;
     }
 
 }
