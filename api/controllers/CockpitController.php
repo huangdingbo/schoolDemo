@@ -16,6 +16,8 @@ use frontend\models\Student;
 use frontend\models\Teacher;
 use frontend\models\Test;
 use frontend\models\Wire;
+use yii\web\ForbiddenHttpException;
+use yii\web\HttpException;
 
 class CockpitController extends MyController
 {
@@ -55,7 +57,7 @@ class CockpitController extends MyController
         $newTest = CommonModel::getNewTest();
         //列表
         $list = Score::find()->leftJoin('student','student.student_id = score.student_id')
-            ->select('score.name,score.grade,score.banji,score.total,score.school_rank,student.pic')
+            ->select('score.id,score.name,score.grade,score.banji,score.total,score.school_rank,student.pic')
             ->where(['test_num' => $newTest['test_num']])
             ->orderBy('score.school_rank asc')
             ->limit(20)
@@ -63,6 +65,22 @@ class CockpitController extends MyController
             ->all();
         return [
             'list' => $list
+        ];
+    }
+
+    public function actionStudentDetail(){
+        $postData = \Yii::$app->request->post();
+        $id = isset($postData['id']) ? $postData['id'] : '';
+        if (!$id){
+            throw new ForbiddenHttpException('缺少id');
+        }
+
+        $type = Score::findOne(['id' => $postData['id']])->type;
+        $selectStr = CommonModel::$selectStrForType[$type].',total,class_rank,school_rank';
+        $item = Score::find()->select($selectStr)->asArray()->one();
+
+        return [
+            'item' => $item
         ];
     }
     //本次考试各班本科概况

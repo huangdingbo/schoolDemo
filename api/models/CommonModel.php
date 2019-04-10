@@ -95,6 +95,11 @@ class CommonModel extends Model
 
     ];
 
+    public static $selectStrForType = [
+        '1' => 'chinese,math,english,physics,chemistry,biology',
+        '2' => 'chinese,math,english,politics,history,geography',
+    ];
+
     public static function getLastTestNum($testNum){
         //本次考试信息
         $currentTestInfo = Test::findOne(['test_num' => $testNum]);
