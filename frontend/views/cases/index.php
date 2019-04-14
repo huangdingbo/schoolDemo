@@ -1,5 +1,6 @@
 <?php
 
+use frontend\assets\AppAsset;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -12,6 +13,7 @@ use yii\helpers\Url;
 $this->title = '我的工作台';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="cases-index">
 
 
@@ -169,11 +171,16 @@ JS;
     $requestPointUrl = Url::toRoute('point');
     $pointJs = <<<JS
     $('.data-point').on('click', function () {
-        $.get('{$requestPointUrl}', { id: $(this).closest('tr').data('key') },
-            function (data) {
-                $('.modal-body').html(data);
-            }  
-        );
+        $.ajax({
+          url: "{$requestPointUrl}",
+          dataType:"text",
+          async:false,
+          data:{ id: $(this).closest('tr').data('key') },
+          success: function(html){
+             $('.modal-body').html(html);
+          }
+        });
+       
     });
 JS;
     $this->registerJs($pointJs);
@@ -211,6 +218,7 @@ JS;
     $requestActivationUrl = Url::toRoute('activation');
     $activationJs = <<<JS
     $('.data-activation').on('click', function () {
+
         $.get('{$requestActivationUrl}', { id: $(this).closest('tr').data('key') },
             function (data) {
                 $('.modal-body').html(data);
@@ -221,3 +229,8 @@ JS;
     $this->registerJs($activationJs);
     ?>
 </div>
+
+<?php //$this->registerJsFile('assets\21f22fdc\jquery.js', ['position' => $this::POS_END]);?>
+<?php //$this->registerJsFile('assets/817b0c35/webuploader/init.js', ['position' => $this::POS_END]);?>
+
+

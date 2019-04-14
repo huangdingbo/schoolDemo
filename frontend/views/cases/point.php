@@ -1,5 +1,6 @@
 <?php
 
+use frontend\assets\AppAsset;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
@@ -9,6 +10,8 @@ use yii\helpers\Html;
 $this->title = '指派';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+
 <div class="cases-form">
 
     <?php $form = ActiveForm::begin(); ?>

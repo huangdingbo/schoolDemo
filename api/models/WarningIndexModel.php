@@ -207,9 +207,9 @@ class WarningIndexModel extends  Model
             $query->andWhere(['like','score.name',$nameStr]);
         }
         if ($course){
-            $selectStr = 'score.test_name,score.grade,score.banji,score.name,score.type as studentType,warning.type,warning.content,warning.dine,warning.status';
+            $selectStr = 'score.test_name,score.grade,score.banji,score.name,score.type as studentType,warning.type,warning.content,warning.dine,warning.status,warning.id';
         }else{
-            $selectStr = 'score.test_name,score.grade,score.banji,score.name,score.type as studentType,warning.type,warning.content,warning.status';
+            $selectStr = 'score.test_name,score.grade,score.banji,score.name,score.type as studentType,warning.type,warning.content,warning.status,warning.id';
         }
         $list = $query->select($selectStr)
             ->orderBy('score.insert_time desc')

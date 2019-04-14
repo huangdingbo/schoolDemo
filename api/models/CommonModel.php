@@ -97,7 +97,7 @@ class CommonModel extends Model
 
     public static $selectStrForType = [
         '1' => 'chinese,math,english,physics,chemistry,biology',
-        '2' => 'chinese,math,english,politics,history,geography',
+        '2' => 'chinese,math,english,politics,history	geography',
     ];
 
     public static function getLastTestNum($testNum){

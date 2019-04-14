@@ -11,8 +11,38 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'redactor' => [
+            'class' => 'yii\redactor\RedactorModule',
+            'uploadDir' => '/data/websites/yii/school/backend/web/upload',  // 比如这里可以填写 ./uploads
+            'uploadUrl' => 'http://huangdingbo.work/school/backend/web/upload',
+            'imageAllowExtensions'=>['jpg','png','gif']
+        ],
+    ],
     'components' => [
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'viewPath' => '@common/mail',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => false,
+            'transport' => [
+                //这里如果你是qq的邮箱，可以参考qq客户端设置后再进行配置 http://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.qq.com',
+                // qq邮箱
+                'username' => '378969398@qq.com',
+                //授权码, 什么是授权码， http://service.mail.qq.com/cgi-bin/help?subtype=1&&id=28&&no=1001256
+                'password' => 'njzpohijkcmfbhjd',
+                'port' => '465',
+                'encryption' => 'ssl',
+            ],
+            'messageConfig'=>[
+                'charset'=>'UTF-8',
+                'from'=>['378969398@qq.com'=>'SCHOOL']
+            ],
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],

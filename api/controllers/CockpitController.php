@@ -75,9 +75,9 @@ class CockpitController extends MyController
             throw new ForbiddenHttpException('缺少id');
         }
 
-        $type = Score::findOne(['id' => $postData['id']])->type;
+        $type = Score::findOne(['id' => $id])->type;
         $selectStr = CommonModel::$selectStrForType[$type].',total,class_rank,school_rank';
-        $item = Score::find()->select($selectStr)->asArray()->one();
+        $item = Score::find()->select($selectStr)->where(['id' => $id])->asArray()->one();
 
         return [
             'item' => $item
