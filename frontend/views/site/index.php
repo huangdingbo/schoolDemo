@@ -19,7 +19,7 @@ $this->title = false;
 
         <p class="lead"> <h2><?=$nickName?>用户，你已登录<?=$title?>！！！</h2></p>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">本系统采用YII2.0</a></p>
+        <p><a class="btn btn-lg btn-success" href="<?=\yii\helpers\Url::to(['document/download'])?>">本系统采用YII2.0</a></p>
     </div>
     <div class="body-content">
 

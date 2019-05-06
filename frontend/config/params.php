@@ -41,4 +41,5 @@ return [
         9 => '地理组',
     ],
     'sql' => '',
+    'tocken' => 'Huang2018.work',
 ];
