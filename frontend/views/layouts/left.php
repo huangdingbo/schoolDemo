@@ -55,6 +55,8 @@ $pic = isset($userModel) ? $userModel->pic : Yii::$app->request->getHostInfo().'
                         'icon' => 'cogs',
                         'url' => '#',
                         'items' => [
+                            ['label' => '路由管理', 'icon' => 'user', 'url' => ['rbac-item/index','is_rout' => '1'],],
+                            ['label' => '角色管理', 'icon' => 'user', 'url' => ['rbac-role/index','is_rout' => '0'],],
                             ['label' => '管理员', 'icon' => 'user', 'url' => ['adminuser/index'],],
                             ['label' => '用户', 'icon' => 'user-plus', 'url' => ['/debug'],],
                         ],
