@@ -13,8 +13,11 @@ use yii\filters\VerbFilter;
 /**
  * TitleController implements the CRUD actions for Title model.
  */
-class TitleController extends Controller
+class TitleController extends CommonController
 {
+    protected  $rbacNeedCheckActions = ['create','update','delete'];
+
+    protected $mustlogin = ['create','update','delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -36,9 +39,9 @@ class TitleController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('teacherTable')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('teacherTable')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new TitleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

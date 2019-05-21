@@ -24,8 +24,11 @@ use yii\web\UploadedFile;
 /**
  * TeacherController implements the CRUD actions for Teacher model.
  */
-class TeacherController extends Controller
+class TeacherController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete','import','export'];
+
+    protected $mustlogin = ['create','update','delete','import','export','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -47,9 +50,9 @@ class TeacherController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('indexTeacherDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('indexTeacherDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new TeacherSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -57,9 +60,9 @@ class TeacherController extends Controller
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         if (isset($searchCondition["TeacherSearch"]["isExport"]) && $searchCondition["TeacherSearch"]["isExport"] == 1){
-            if (!Yii::$app->user->can('exportTeacherDoc')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('exportTeacherDoc')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
             $data = Yii::$app->db->createCommand(Yii::$app->params['sql'])->queryAll();
 
             $searchModel->dealExportData($data); //处理数据
@@ -86,9 +89,9 @@ class TeacherController extends Controller
      */
     public function actionView($id)
     {
-        if (!Yii::$app->user->can('viewTeacherDoc')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('viewTeacherDoc')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
@@ -101,9 +104,9 @@ class TeacherController extends Controller
      */
     public function actionCreate()
     {
-        if (!Yii::$app->user->can('createTeacherDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('createTeacherDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $data = Yii::$app->request->post();
         $model = new Teacher();
         $data = isset($data['Teacher']['pic']) ? Student::dealPicData($data,'Teacher') : $data;
@@ -124,9 +127,9 @@ class TeacherController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!Yii::$app->user->can('updateTeacherDoc')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('updateTeacherDoc')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         $model = $this->findModel($id);
         $data = Yii::$app->request->post();
         $data = isset($data['Teacher']['pic']) ? Student::dealPicData($data,'Teacher') : $data;
@@ -148,9 +151,9 @@ class TeacherController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!Yii::$app->user->can('deleteTeacherDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('deleteTeacherDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -173,9 +176,9 @@ class TeacherController extends Controller
     }
 
     public function actionImport(){
-        if (!Yii::$app->user->can('importTeacherDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('importTeacherDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $model = new FileImportForm();
 
         if(\Yii::$app->request->isPost){
@@ -220,9 +223,9 @@ class TeacherController extends Controller
 
     //模板下载
     public function actionDownload(){
-        if (!Yii::$app->user->can('downloadTeacherDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('downloadTeacherDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $file = \Yii::getAlias('@frontendDownload').'/excel'.'/'.'教师信息表.xlsx';
         if (!file_exists($file)){
             Yii::$app->session->setFlash('warning','文件不存在');

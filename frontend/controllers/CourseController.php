@@ -16,8 +16,11 @@ use yii\filters\VerbFilter;
 /**
  * CourseController implements the CRUD actions for Course model.
  */
-class CourseController extends Controller
+class CourseController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','delete',];
+
+    protected $mustlogin = ['create','delete','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -103,18 +106,18 @@ class CourseController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('update', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Deletes an existing Course model.
@@ -148,6 +151,7 @@ class CourseController extends Controller
 
 
     public function beforeAction($action) {
+        parent::beforeAction($action);
 
         $currentaction = $action->id;
 
@@ -157,8 +161,6 @@ class CourseController extends Controller
 
             $action->controller->enableCsrfValidation = false;
         }
-        parent::beforeAction($action);
-
         return true;
     }
 

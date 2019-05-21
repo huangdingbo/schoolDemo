@@ -28,7 +28,7 @@ class RbacItemChild extends \yii\db\ActiveRecord
     {
         return [
             [['parent', 'child'], 'required'],
-            [['parent', 'child'], 'string', 'max' => 64],
+            [['parent', 'child'], 'safe'],
         ];
     }
 

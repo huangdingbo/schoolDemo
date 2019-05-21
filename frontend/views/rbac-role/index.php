@@ -9,6 +9,7 @@ use yii\grid\GridView;
 
 $this->title = '角色管理';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="rbac-item-index">
 
@@ -39,12 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update}{rule}{delete}',
+                'template' => '{update}{item}{delete}',
                 'buttons' => [
-                    'rule' => function ($url, $model, $key) {
+                    'item' => function ($url, $model, $key) {
                         return Html::a('<span class = "glyphicon glyphicon-saved"></span>&nbsp;&nbsp;', $url, [
-                            'title' => Yii::t('yii','增加规则'),
-                            'aria-label' => Yii::t('yii','增加规则'),
+                            'title' => Yii::t('yii','分配路由'),
+                            'aria-label' => Yii::t('yii','分配路由'),
                             'data-id' => $key,
                         ]);
                     },

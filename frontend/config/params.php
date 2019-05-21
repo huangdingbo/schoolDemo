@@ -42,4 +42,6 @@ return [
     ],
     'sql' => '',
     'tocken' => 'Huang2018.work',
+
+    'TaskAllowedIPs' => ['183.222.190.198'],
 ];

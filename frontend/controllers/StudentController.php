@@ -17,8 +17,11 @@ use yii\web\UploadedFile;
 /**
  * StudentController implements the CRUD actions for Student model.
  */
-class StudentController extends Controller
+class StudentController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete','import','export'];
+
+    protected $mustlogin = ['create','update','delete','import','export','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -40,9 +43,9 @@ class StudentController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('indexStudentDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('indexStudentDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
 
         $searchModel = new StudentSearch();
 
@@ -52,9 +55,9 @@ class StudentController extends Controller
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         if (isset($searchCondition["StudentSearch"]["isExport"]) && $searchCondition["StudentSearch"]["isExport"] == 1){
-            if (!Yii::$app->user->can('exportStudentDoc')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('exportStudentDoc')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
             //导出不适应分页，把默认的20条改的很大
             $dataProvider->setPagination(new Pagination([
                 'defaultPageSize' => 1000000,
@@ -90,9 +93,6 @@ class StudentController extends Controller
      */
     public function actionView($id)
     {
-        if (!Yii::$app->user->can('viewStudentDoc')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
         return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
@@ -105,9 +105,9 @@ class StudentController extends Controller
      */
     public function actionCreate()
     {
-        if (!Yii::$app->user->can('createStudentDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('createStudentDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $data = Yii::$app->request->post();
         $model = new Student();
         $data = isset($data['Student']['pic']) ? Student::dealPicData($data) : $data;
@@ -129,9 +129,9 @@ class StudentController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!Yii::$app->user->can('updateStudentDoc')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('updateStudentDoc')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         $model = $this->findModel($id);
         $data = Yii::$app->request->post();
         $data = isset($data['Student']['pic']) ? Student::dealPicData($data) : $data;
@@ -153,9 +153,9 @@ class StudentController extends Controller
      */
     public function actionDelete($id)
     {
-         if (!Yii::$app->user->can('deleteStudentDoc')){
-             throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-         }
+//         if (!Yii::$app->user->can('deleteStudentDoc')){
+//             throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//         }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -178,9 +178,9 @@ class StudentController extends Controller
     }
 
     public function actionImport(){
-        if (!Yii::$app->user->can('importStudentDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('importStudentDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $model = new FileImportForm();
 
         if(\Yii::$app->request->isPost){
@@ -224,9 +224,9 @@ class StudentController extends Controller
 
     //模板下载
     public function actionDownload(){
-        if (!Yii::$app->user->can('downloadStudentDoc')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('downloadStudentDoc')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $file = \Yii::getAlias('@frontendDownload').'/excel'.'/'.'学生信息表.xlsx';
         if (!file_exists($file)){
             Yii::$app->session->setFlash('warning','文件不存在');

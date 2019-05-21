@@ -13,8 +13,11 @@ use yii\filters\VerbFilter;
 /**
  * Class0Controller implements the CRUD actions for Class0 model.
  */
-class Class0Controller extends Controller
+class Class0Controller extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete'];
+
+    protected $mustlogin = ['create','update','delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -36,9 +39,9 @@ class Class0Controller extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('classTable')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('classTable')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new Class0Search();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

@@ -15,8 +15,11 @@ use yii\filters\VerbFilter;
 /**
  * KaohaoController implements the CRUD actions for Kaohao model.
  */
-class KaohaoController extends Controller
+class KaohaoController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['delete'];
+
+    protected $mustlogin = ['delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -38,18 +41,18 @@ class KaohaoController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('indexCand')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('indexCand')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new KaohaoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         if (isset($searchCondition["KaohaoSearch"]["isExport"]) && $searchCondition["KaohaoSearch"]["isExport"] == 1){
-            if (!Yii::$app->user->can('exportCand')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('exportCand')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
             //导出不适应分页，把默认的20条改的很大
             $dataProvider->setPagination(new Pagination([
                 'defaultPageSize' => 1000000,
@@ -140,9 +143,9 @@ class KaohaoController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!Yii::$app->user->can('deleteCand')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('deleteCand')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

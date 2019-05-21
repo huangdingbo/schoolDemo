@@ -13,8 +13,11 @@ use yii\filters\VerbFilter;
 /**
  * DiplomaController implements the CRUD actions for Diploma model.
  */
-class DiplomaController extends Controller
+class DiplomaController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete'];
+
+    protected $mustlogin = ['create','update','delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -36,9 +39,9 @@ class DiplomaController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('teacherTable')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('teacherTable')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new DiplomaSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

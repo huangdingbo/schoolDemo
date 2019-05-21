@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\components\RbacCheck;
 use frontend\models\RbacRule;
 use Yii;
 use frontend\models\RbacItem;
@@ -13,8 +14,11 @@ use yii\filters\VerbFilter;
 /**
  * RbacItemController implements the CRUD actions for RbacItem model.
  */
-class RbacItemController extends Controller
+class RbacItemController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete','rule'];
+
+    protected $mustlogin = ['create','update','delete','rule','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -70,7 +74,7 @@ class RbacItemController extends Controller
         $model->type = '2';
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['index','is_rout' => '1']);
         }
 
         return $this->render('create', [
@@ -90,7 +94,7 @@ class RbacItemController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['index','is_rout' => '1']);
         }
 
         return $this->render('update', [
@@ -109,7 +113,7 @@ class RbacItemController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index','is_rout' => '1']);
     }
 
     /**
@@ -134,9 +138,9 @@ class RbacItemController extends Controller
         $model -> item_id = $id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()){
-            return $this->redirect(['index']);
+            return $this->redirect(['index','is_rout' => '1']);
         }
-        var_dump($model->getErrors());
+
         return $this->render('rule',['model' => $model]);
     }
 

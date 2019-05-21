@@ -13,8 +13,11 @@ use yii\filters\VerbFilter;
 /**
  * PoliticalController implements the CRUD actions for Political model.
  */
-class PoliticalController extends Controller
+class PoliticalController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete'];
+
+    protected $mustlogin = ['create','update','delete','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -38,13 +41,13 @@ class PoliticalController extends Controller
     {
         //学生档案管理数据表配置权限检查
         if (Yii::$app->request->queryParams['type'] == 1){
-            if (!Yii::$app->user->can('studentTable')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('studentTable')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
         }elseif (Yii::$app->request->queryParams['type'] == 2){
-            if (!Yii::$app->user->can('teacherTable')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('teacherTable')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
         }
         $searchModel = new PoliticalSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

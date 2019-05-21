@@ -13,8 +13,11 @@ use yii\filters\VerbFilter;
 /**
  * DutyController implements the CRUD actions for Duty model.
  */
-class DutyController extends Controller
+class DutyController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete'];
+
+    protected $mustlogin = ['create','update','delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -38,13 +41,13 @@ class DutyController extends Controller
     {
         //学生档案管理数据表配置权限检查
         if (Yii::$app->request->queryParams['type'] == 1){
-            if (!Yii::$app->user->can('studentTable')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('studentTable')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
         }elseif (Yii::$app->request->queryParams['type'] == 2){
-            if (!Yii::$app->user->can('teacherTable')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('teacherTable')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
         }
         $searchModel = new DutySearch();
 

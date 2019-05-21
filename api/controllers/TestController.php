@@ -9,6 +9,7 @@
 namespace api\controllers;
 
 
+use common\components\RbacCheck;
 use common\components\RedisCache;
 use common\components\RegularExpression;
 use frontend\models\Warning;

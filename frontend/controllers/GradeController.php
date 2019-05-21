@@ -13,8 +13,11 @@ use yii\filters\VerbFilter;
 /**
  * GradeController implements the CRUD actions for Grade model.
  */
-class GradeController extends Controller
+class GradeController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete'];
+
+    protected $mustlogin = ['create','update','delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -36,9 +39,9 @@ class GradeController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('docOtherTable')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('docOtherTable')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new GradeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

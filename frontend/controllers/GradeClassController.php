@@ -17,8 +17,11 @@ use yii\filters\VerbFilter;
 /**
  * GradeClassController implements the CRUD actions for GradeClass model.
  */
-class GradeClassController extends Controller
+class GradeClassController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','delete','arranging','export'];
+
+    protected $mustlogin = ['create','delete','arranging','export','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -40,9 +43,9 @@ class GradeClassController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('indexCourse')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('indexCourse')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new GradeClassSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -60,9 +63,9 @@ class GradeClassController extends Controller
      */
     public function actionView($id)
     {
-        if (!Yii::$app->user->can('viewCourse')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('viewCourse')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         $info = $this->findModel($id);
         $model = new GradeClass();
         $data = $model->getCourseTable($info);
@@ -79,9 +82,9 @@ class GradeClassController extends Controller
      */
     public function actionCreate()
     {
-        if (!Yii::$app->user->can('createCourse')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('createCourse')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $model = new GradeClass();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -100,18 +103,18 @@ class GradeClassController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('update', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Deletes an existing GradeClass model.
@@ -122,9 +125,9 @@ class GradeClassController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!Yii::$app->user->can('deleteCourse')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('deleteCourse')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -147,9 +150,9 @@ class GradeClassController extends Controller
     }
 
     public function actionArranging($id){
-        if (!Yii::$app->user->can('arrangingCourse')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('arrangingCourse')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $info = $this->findModel($id);
         $model = new GradeClass();
         $data = $model->getData();
@@ -162,9 +165,9 @@ class GradeClassController extends Controller
     }
     //导出
     public function actionExport($id){
-        if (!Yii::$app->user->can('exportCourse')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('exportCourse')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $model = new GradeClass();
         $info = $this->findModel($id);
         $data = $model->getExportData($info);

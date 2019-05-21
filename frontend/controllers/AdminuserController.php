@@ -2,10 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\components\RbacCheck;
 use frontend\models\AuthAssignment;
 use frontend\models\AuthItem;
 use frontend\models\Adminuser;
 use frontend\models\AdminuserSearch;
+use frontend\models\RbacAssignment;
+use frontend\models\RbacItem;
 use frontend\models\ResetpwdForm;
 use frontend\models\SignupForm;
 use Yii;
@@ -19,8 +22,11 @@ use yii\filters\VerbFilter;
 /**
  * AdminuserController implements the CRUD actions for Adminuser model.
  */
-class AdminuserController extends Controller
+class AdminuserController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','resetpwd','delete','privilege'];
+
+    protected $mustlogin = ['index','view','create','update','resetpwd','delete','privilege'];
     /**
      * @inheritdoc
      */
@@ -45,9 +51,9 @@ class AdminuserController extends Controller
      */
     public function actionIndex()
     {
-        if (Yii::$app->user->identity->username != 'admin'){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (Yii::$app->user->identity->username != 'admin'){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new AdminuserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -160,45 +166,50 @@ class AdminuserController extends Controller
     {
         //1 找出所有权限，提供给checkboxlist
 
-        $allPrivilege = AuthItem::find()->select('name,description')
-            ->where(['type' => '1'])->orderBy('description')
-            ->all();
-
-        foreach ($allPrivilege as $item) {
-            $allPrivilegeArray[$item->name] = $item->description;
-        }
+        $allPrivilegeArray = RbacItem::find()->select('name,name as value')
+            ->where(['type' => '1'])->indexBy('name')
+            ->asArray()
+            ->column();
 
         //2 找出当前用户已经有的权限
 
-        $AuthAssignment = AuthAssignment::find()->select(['item_name'])
+        $AuthAssignment = RbacAssignment::find()->select(['item_name'])
             ->where(['user_id'=>$id])
+            ->asArray()
             ->all();
 
         $AuthAssignmentArray = array();
 
         foreach ($AuthAssignment as $item){
-            array_push($AuthAssignmentArray,$item->item_name);
+            array_push($AuthAssignmentArray,$item['item_name']);
         }
 
         //3 用户提交的数据更新AuthAssignment表
 
         if(isset($_POST['newPri'])){
-            AuthAssignment::deleteAll('user_id = :id',[":id" => $id]);
+            RbacAssignment::deleteAll('user_id = :id',[":id" => $id]);
 
             $newPri = $_POST['newPri'];
 
-            $len = count($newPri);
+            foreach ($newPri as $item){
+                $insertModel = new RbacAssignment();
 
-            for($i = 0 ; $i < $len ;$i++){
-                $aPri = new AuthAssignment();
-                $aPri -> item_name = $newPri[$i];
-                $aPri -> user_id = $id;
-                $aPri -> created_at =time();
-                $aPri -> save();
+                $insertModel->item_name = $item;
+                $insertModel->user_id = $id;
+                $insertModel->created_at = (string)time();
+
+                if ($insertModel->save()){
+                    continue;
+                }else{
+                    Yii::$app->session->setFlash('danger','权限分配失败！');
+                    return $this->redirect(['index']);
+                }
             }
-            if($aPri->save()){
-                return $this->redirect(['index']);
-            }
+            //更新缓存
+            RbacCheck::getAuthList($id,'1');
+
+            Yii::$app->session->setFlash('success','权限分配成功！');
+            return $this->redirect(['index']);
         }
 
         //4 渲染多选按钮

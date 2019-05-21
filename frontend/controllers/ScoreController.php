@@ -18,8 +18,11 @@ use yii\filters\VerbFilter;
 /**
  * ScoreController implements the CRUD actions for Score model.
  */
-class ScoreController extends Controller
+class ScoreController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['update','delete'];
+
+    protected $mustlogin = ['update','delete','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -41,9 +44,9 @@ class ScoreController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('indexScore')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('indexScore')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         $searchModel = new ScoreSearch();
@@ -51,9 +54,9 @@ class ScoreController extends Controller
         $dataProvider = $searchModel->search($searchCondition);
 
         if (isset($searchCondition["ScoreSearch"]["isExport"]) && $searchCondition["ScoreSearch"]["isExport"] == 1){
-            if (!Yii::$app->user->can('exportScore')){
-                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-            }
+//            if (!Yii::$app->user->can('exportScore')){
+//                throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//            }
             //导出不适应分页，把默认的20条改的很大
             $dataProvider->setPagination(new Pagination([
                 'defaultPageSize' => 1000000,
@@ -99,9 +102,9 @@ class ScoreController extends Controller
      */
     public function actionView($id)
     {
-        if (!Yii::$app->user->can('viewScore')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('viewScore')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         $model = $this->findModel($id);
 
         $img = (Student::find()->where(['student_id'=>$model->student_id])->one())->pic;
@@ -145,9 +148,9 @@ class ScoreController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!Yii::$app->user->can('updateScore')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('updateScore')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -172,9 +175,9 @@ class ScoreController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!Yii::$app->user->can('deleteScore')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('deleteScore')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

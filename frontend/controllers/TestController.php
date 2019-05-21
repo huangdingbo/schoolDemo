@@ -20,8 +20,11 @@ use yii\filters\VerbFilter;
 /**
  * TestController implements the CRUD actions for Test model.
  */
-class TestController extends Controller
+class TestController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','delete','candidate','audit','wire','entry'];
+
+    protected $mustlogin = ['create','update','delete','candidate','audit','wire','entry','index','view'];
     /**
      * {@inheritdoc}
      */
@@ -43,9 +46,9 @@ class TestController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->can('indexTest')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('indexTest')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $searchModel = new TestSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -75,9 +78,9 @@ class TestController extends Controller
      */
     public function actionCreate()
     {
-        if (!Yii::$app->user->can('createTest')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('createTest')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $model = new Test();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -98,9 +101,9 @@ class TestController extends Controller
      */
     public function actionUpdate($id)
     {
-        if (!Yii::$app->user->can('updateTest')){
-            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-        }
+//        if (!Yii::$app->user->can('updateTest')){
+//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
+//        }
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -121,9 +124,9 @@ class TestController extends Controller
      */
     public function actionDelete($id)
     {
-        if (!Yii::$app->user->can('deleteTest')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('deleteTest')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -146,9 +149,9 @@ class TestController extends Controller
     }
 
     public function actionCandidate($id){
-        if (!Yii::$app->user->can('createTestNum')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('createTestNum')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
 
         $testInfo = Test::findOne(['id'=>$id]);
         if ($testInfo->status == 2){
@@ -200,9 +203,9 @@ class TestController extends Controller
     }
 
     public function actionAudit($id){
-        if (!Yii::$app->user->can('endTest')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('endTest')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $model = Test::find()->where(['id' => $id])->one();
         $model->status = 2;
         $model->beforeSave('');
@@ -213,9 +216,9 @@ class TestController extends Controller
     }
 
     public function actionEntry($id){
-        if (!Yii::$app->user->can('entryTestScore')){
-            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-        }
+//        if (!Yii::$app->user->can('entryTestScore')){
+//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
+//        }
         $testModek = Test::findOne(['id'=>$id]);
         if ($testModek->status == 2){
             Yii::$app->session->setFlash('warning','本次考试已结束！！！');

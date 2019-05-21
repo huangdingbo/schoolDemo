@@ -9,6 +9,7 @@ use yii\grid\GridView;
 
 $this->title = '路由管理';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="rbac-item-index">
 

@@ -5,6 +5,7 @@ namespace frontend\controllers;
 
 
 use frontend\models\RbacItem;
+use frontend\models\RbacItemChild;
 use frontend\models\RbacItemSearch;
 use frontend\models\RbacRule;
 use Yii;
@@ -12,8 +13,11 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class RbacRoleController extends Controller
+class RbacRoleController extends CommonController
 {
+    protected $rbacNeedCheckActions = ['create','update','item','delete'];
+
+    protected $mustlogin = ['create','update','item','delete','index'];
     /**
      * {@inheritdoc}
      */
@@ -112,5 +116,36 @@ class RbacRoleController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionItem($id){
+        $model = new RbacItemChild();
+
+        $model->parent = (RbacItem::findOne(['id' => $id]))['name'];
+
+        $routeList = RbacItem::find()->select('description,name')->where(['type' => '2'])->indexBy('name')->asArray()->column();
+
+        if (Yii::$app->request->isPost){
+            $routes = Yii::$app->request->post();
+
+            foreach ($routes['RbacItemChild']['child'] as $route){
+                $insetModel = clone $model;
+
+                $insetModel->child = $route;
+
+                if ($insetModel->save()){
+                    continue;
+                }else{
+                    Yii::$app->session->setFlash('danger','路由分配失败！！！');
+                    $this->redirect(['index']);
+                }
+            }
+            Yii::$app->session->setFlash('success','路由分配成功！！！');
+            $this->redirect(['index']);
+        }
+        return $this->render('item',[
+            'model' => $model,
+            'routeList' => $routeList,
+        ]);
     }
 }
