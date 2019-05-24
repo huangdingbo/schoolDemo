@@ -18,7 +18,7 @@ class CommonController extends Controller
     protected $actions = ['*'];
     protected $except = [];
     protected $mustlogin = [];
-    protected $verbs = [];
+    protected $verbs = ['delete' => ['POST']];
 
     public function beforeAction($action)
     {

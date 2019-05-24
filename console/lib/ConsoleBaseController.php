@@ -40,11 +40,13 @@ class ConsoleBaseController extends Controller
 
     public function afterAction($action, $result)
     {
-        if (parent::afterAction($action, $result)){
-            WriteLogTool::writeLog($result);
+            parent::afterAction($action, $result);
+
             $this->task->last_finish_time = date("Y-m-d H:i:s",time());
             if($result){
                 $this->task->status=TaskModel::RUNNING_SUCCESS;
+                $this->task->is_kill = TaskModel::TASK_IS_NOTKILLED;
+                WriteLogTool::writeLog('执行成功',$action->getUniqueId());
             }else{
                 //改状态
                 $this->task->status=TaskModel::RUNNING_FAILED;
@@ -58,7 +60,7 @@ class ConsoleBaseController extends Controller
             $this->log->finish_time = $this->task->last_finish_time;
             $this->log("Task [".$this->task->program."] finished.");
             $this->log->save(false);
-        }
+
         return true;
     }
 

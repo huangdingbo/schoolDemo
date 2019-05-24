@@ -32,9 +32,10 @@ class WriteLogTool
      *日志格式
      */
     public static function logFormat($data,$unqid = ''){
+
         $header = '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'.PHP_EOL;
         $content = date('Y-m-d H:i:s').PHP_EOL;
-        $data = "<$unqid>" . $data . PHP_EOL;
+        $data = "《{$unqid}》" . $data . PHP_EOL;
         $footer = '----------------------------------------------------------------------------------------------------------'.PHP_EOL;
 
         return $header . $content . $data . $footer;

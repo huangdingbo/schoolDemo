@@ -4,9 +4,10 @@
 namespace console\controllers;
 
 
+use console\lib\ConsoleBaseController;
 use yii\db\Query;
 
-class TestController extends CommonController
+class TestController extends ConsoleBaseController
 {
     public function actionIndex1(){
         for ($i = 0;$i<3;$i++){

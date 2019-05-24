@@ -37,6 +37,23 @@ class config
         '7' => '第七节',
     ];
 
+    public static $caseType = [
+        '1' => '打架斗殴',
+        '2' => '抽烟',
+        '3' => '酗酒',
+        '4' => '顶撞老师',
+        '5' => '逃课',
+        '6' => '上网',
+        '7' => '携带手机',
+        '8' => '上课睡觉',
+    ];
+
+    public static $caseStatus = [
+        '1' => '处理中',
+        '2' => '已解决',
+        '3' => '可激活',
+    ];
+
     public static function getLocationMap(){
         $grade = Grade::find()->select('the')->asArray()->all();
         $banji = Class0::find()->select('name')->asArray()->all();

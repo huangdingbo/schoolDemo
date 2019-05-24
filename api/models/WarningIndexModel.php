@@ -66,18 +66,28 @@ class WarningIndexModel extends  Model
         return $list;
     }
 
-    public static function getClassList(){
-        $list = Class0::find()->select('name')->orderBy('id asc')->asArray()->all();
+    public static function getClassList($type){
+        $query = Class0::find()->select('name')->orderBy('id asc');
+        if ($type == 1){
+            $query->andWhere(['<=','id','5']);
+        }else{
+            $query->andWhere(['>=','id','6']);
+        }
+        $list = $query->asArray()->all();
         foreach ($list as &$aitem){
             $aitem['value'] = $aitem['name'];
         }
+
+        $list = array_merge([['name' => '全部班级','value' => '']],$list);
 
         return $list;
     }
 
     public static function getHighRiskStudent($grade,$type){
-        $testNum = Test::find()->where(['grade_num' => $grade,'type' => $type])->count();
         preg_match('/\d+/',$grade,$arr);
+        $testNum = Test::find()->leftJoin('grade','grade.id = test.grade_num')
+            ->where(['grade.the' => $arr[0],'test.type' => $type])->count();
+
         $studentList = Student::find()->where(['type'=>$type])
             ->andWhere(['grade'=>$arr[0]])
             ->asArray()
@@ -87,7 +97,7 @@ class WarningIndexModel extends  Model
             $num = Score::find()->leftJoin('warning','score.id = warning.score_id')
                 ->where(['score.student_id' => $item['student_id']])
                 ->count();
-            if ($num >= $testNum){
+            if ($num >= ($testNum*2)){
                 $banji = (Class0::findOne(['id'=>$item['banji']]))->name;
                 $list[] = [
                     'name' => $item['name'],
@@ -157,6 +167,7 @@ class WarningIndexModel extends  Model
             ->limit(10)
             ->asArray()
             ->all();
+
        return $list;
     }
 
@@ -180,7 +191,7 @@ class WarningIndexModel extends  Model
         return $list;
     }
 
-    public static function getWarningAllList($grade,$class,$test,$type,$studentType,$course,$status,$nameStr){
+    public static function getWarningAllList($grade,$class,$test,$type,$studentType,$course,$status,$nameStr,$offset,$size){
         $query = Warning::find()->leftJoin('score','score.id = warning.score_id');
         if ($grade){
             $query->andWhere(['score.grade' => $grade]);
@@ -195,6 +206,9 @@ class WarningIndexModel extends  Model
             $query->andWhere(['warning.type' => $type]);
         }
         if ($studentType){
+            if ($studentType == 2){
+                $studentType = '0';
+            }
             $query->andWhere(['score.type' => $studentType]);
         }
         if ($course){
@@ -211,16 +225,32 @@ class WarningIndexModel extends  Model
         }else{
             $selectStr = 'score.test_name,score.grade,score.banji,score.name,score.type as studentType,warning.type,warning.content,warning.status,warning.id';
         }
+        //总数
+        $total =  $query->count();
+        $pages = (string)ceil($total/$size);
+
         $list = $query->select($selectStr)
             ->orderBy('score.insert_time desc')
+            ->offset($offset*$size)
+            ->limit($size)
             ->asArray()
             ->all();
+
+
         foreach ($list as &$item){
             $item['studentType'] = $item['studentType'] == 1 ? '理科' : '文科';
             $item['type'] = self::$warningType[$item['type']];
             $item['status'] = $item['status'] == 1 ? '正在预警' : '预警已解除';
         }
-       return $list;
+        $paging = array();
+        $paging['total'] = $total;
+        $paging['pages'] = $pages;
+        $paging['currentPage'] = $offset + 1;
+        $paging['offset'] = $offset + 1;
+        $paging['size'] = $size;
+        $paging['hasMore'] = $offset >= $pages-1 ? false : true;
+
+       return ['list'=>$list,'paging'=>$paging];
     }
 
     public static function getWarningDetail($id){
@@ -244,12 +274,9 @@ class WarningIndexModel extends  Model
         preg_match('/\d+/',$grade,$arr);
         $query = Test::find()->leftJoin('grade','grade.id = test.grade_num')
             ->select('test.test_name,test.test_num,grade.the,type')
-            ->where(['test.status'=>'2','grade.the' => $arr[0]])
+            ->where(['test.status'=>'2','grade.the' => $arr[0],'test.type' => $type])
             ->orderBy('test.test_num desc,test.insert_time desc')
             ->asArray();
-        if ($type){
-            $query->andWhere(['type' => $type]);
-        }
         return $query->asArray()->all();
     }
 }

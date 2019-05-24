@@ -20,10 +20,10 @@ class FrontendController extends Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)){
-           $allowedIPs = \Yii::$app->params['TaskAllowedIPs'];
-           if (!in_array(ToolModel::getIP(),$allowedIPs)){
-               throw new ForbiddenHttpException('你无权访问该页面，请联系管理员！！！');
-           }
+//           $allowedIPs = \Yii::$app->params['TaskAllowedIPs'];
+//           if (!in_array(ToolModel::getIP(),$allowedIPs)){
+//               throw new ForbiddenHttpException('你无权访问该页面，请联系管理员！！！');
+//           }
         }
        return true;
     }

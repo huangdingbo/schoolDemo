@@ -33,7 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'data',
                 'value' => function($dataProvider){
-                    return (\frontend\models\RbacRule::find(['item_id' => $dataProvider->id])->orderBy('updated_at desc')->one())['data'];
+                     $rule = (\frontend\models\RbacRule::find(['item_id' => $dataProvider->id])->asArray()->orderBy('updated_at desc')->one());
+                    return isset($rule) ? $rule['data'] : '';
                 }
             ],
             [

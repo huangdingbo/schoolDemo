@@ -12,6 +12,7 @@ namespace api\controllers;
 use api\models\ClassAnalysisModel;
 use frontend\models\Score;
 use frontend\models\Test;
+use frontend\models\Warning;
 use yii\web\ForbiddenHttpException;
 
 class ClassAnalysisController extends  MyController
@@ -75,12 +76,37 @@ class ClassAnalysisController extends  MyController
         if (!$testNum){
             throw new ForbiddenHttpException('缺少考试编号');
         }
-        $grade = (Test::findOne(['test_num' => $testNum]))->grade_num;
-        $list = ClassAnalysisModel::getStableForClass($grade);
+        $testModel = Test::findOne(['test_num' => $testNum]);
+        $grade = $testModel->grade_num;
+        $testType = $testModel->type;
+
+        $list = ClassAnalysisModel::getStableForClass($grade,$testType);
 
         return [
             'list' => $list
         ];
+    }
+
+    /**
+     *本次考试各班预警人数
+     */
+    public function actionWarningNum(){
+        $postData = \Yii::$app->request->post();
+        $testNum =  isset($postData['testNum']) ? $postData['testNum'] : '';
+        if (!$testNum){
+            throw new ForbiddenHttpException('缺少考试编号');
+        }
+
+        $list = Warning::find()->leftJoin('score','warning.score_id = score.id')
+            ->select('score.banji as name,count(*) as value')
+            ->where(['warning.warning_test' => $testNum])
+            ->groupBy('score.banji')
+            ->orderBy('value desc')
+            ->asArray()
+            ->all();
+
+        return ['list' => $list];
+
     }
 
 }

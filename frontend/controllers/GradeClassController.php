@@ -25,17 +25,17 @@ class GradeClassController extends CommonController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
 
     /**
      * Lists all GradeClass models.
@@ -43,9 +43,6 @@ class GradeClassController extends CommonController
      */
     public function actionIndex()
     {
-//        if (!Yii::$app->user->can('indexCourse')){
-//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-//        }
         $searchModel = new GradeClassSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -63,9 +60,6 @@ class GradeClassController extends CommonController
      */
     public function actionView($id)
     {
-//        if (!Yii::$app->user->can('viewCourse')){
-//            return $this->renderAjax('/site/error',['name'=>'权限验证不通过','message'=>Yii::$app->params['perMessage']]);
-//        }
         $info = $this->findModel($id);
         $model = new GradeClass();
         $data = $model->getCourseTable($info);

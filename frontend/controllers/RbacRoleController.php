@@ -4,6 +4,7 @@
 namespace frontend\controllers;
 
 
+use frontend\models\Adminuser;
 use frontend\models\RbacItem;
 use frontend\models\RbacItemChild;
 use frontend\models\RbacItemSearch;
@@ -15,23 +16,10 @@ use yii\web\NotFoundHttpException;
 
 class RbacRoleController extends CommonController
 {
-    protected $rbacNeedCheckActions = ['create','update','item','delete'];
+//    protected $rbacNeedCheckActions = ['create','update','item','delete'];
 
     protected $mustlogin = ['create','update','item','delete','index'];
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+
 
     /**
      * Lists all RbacItem models.
@@ -125,10 +113,28 @@ class RbacRoleController extends CommonController
 
         $routeList = RbacItem::find()->select('description,name')->where(['type' => '2'])->indexBy('name')->asArray()->column();
 
+        $adminguserInfo = RbacItem::findOne(['id' => $id]);
+
+        $defaultRoutes = RbacItemChild::find()->select('child')->where(['parent' => $adminguserInfo->name])->asArray()->column();
+
+
         if (Yii::$app->request->isPost){
+
             $routes = Yii::$app->request->post();
 
-            foreach ($routes['RbacItemChild']['child'] as $route){
+           $psotRoutesNum = count($routes['child']);
+
+           $defaultRoutesNum = count($defaultRoutes);
+
+            //如果没有变化，跳转到首页
+           if ($psotRoutesNum == $defaultRoutesNum){
+              return $this->redirect(['index']);
+           }
+
+           //删除所有权限，重新分配
+            RbacItemChild::deleteAll(['parent' => $adminguserInfo->name]);
+
+            foreach ($routes['child'] as $route){
                 $insetModel = clone $model;
 
                 $insetModel->child = $route;
@@ -141,11 +147,12 @@ class RbacRoleController extends CommonController
                 }
             }
             Yii::$app->session->setFlash('success','路由分配成功！！！');
-            $this->redirect(['index']);
+            return $this->redirect(['index']);
         }
         return $this->render('item',[
             'model' => $model,
             'routeList' => $routeList,
+            'defaultRoutes' => $defaultRoutes
         ]);
     }
 }

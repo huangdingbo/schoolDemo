@@ -28,17 +28,17 @@ class TestController extends CommonController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
 
     /**
      * Lists all Test models.
@@ -149,9 +149,6 @@ class TestController extends CommonController
     }
 
     public function actionCandidate($id){
-//        if (!Yii::$app->user->can('createTestNum')){
-//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-//        }
 
         $testInfo = Test::findOne(['id'=>$id]);
         if ($testInfo->status == 2){
@@ -196,16 +193,15 @@ class TestController extends CommonController
         }
       return $this->render('cnad',[
           'model' => $model,
-          'grade' => $grade
+          'grade' => $grade,
+          'type' => $testInfo->type,
 
       ]);
 
     }
 
     public function actionAudit($id){
-//        if (!Yii::$app->user->can('endTest')){
-//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-//        }
+
         $model = Test::find()->where(['id' => $id])->one();
         $model->status = 2;
         $model->beforeSave('');
@@ -216,24 +212,26 @@ class TestController extends CommonController
     }
 
     public function actionEntry($id){
-//        if (!Yii::$app->user->can('entryTestScore')){
-//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-//        }
+
         $testModek = Test::findOne(['id'=>$id]);
+
         if ($testModek->status == 2){
             Yii::$app->session->setFlash('warning','本次考试已结束！！！');
             return $this->redirect(['test/index']);
         }
         $queryParams = Yii::$app->request->queryParams;
+
         //选择录入成绩，先根据考试信息插入成绩表基本信息
         $searchModel = new ScoreSearch();
         //考试信息
         $testInfo = $searchModel->getTeatInfo($id);
+
         //学生信息
         $studentList = $searchModel->getStudentList($testInfo);
 
-        if ((Score::findOne(['test_num' => $testInfo->test_num] ))){
 
+        if ((Score::findOne(['test_num' => $testInfo->test_num] ))){
+//            echo 111;exit;
 //            Yii::$app->session->setFlash('warning','本次考试学生基本信息已存在，请在下方录入！');
 
         }else{
@@ -243,8 +241,11 @@ class TestController extends CommonController
 
         $queryParams['ScoreSearch']['test_num'] = $testInfo->test_num;
 
+        $queryParams['ScoreSearch']['type'] = $testInfo->type;
+
         $dataProvider = $searchModel->search($queryParams);
         $list = $dataProvider->getModels();
+
         return $this->render('/score/entry',[
             'searchModel' => $searchModel,
             'list' => $list,

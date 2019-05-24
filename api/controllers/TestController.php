@@ -9,11 +9,10 @@
 namespace api\controllers;
 
 
-use common\components\RbacCheck;
 use common\components\RedisCache;
 use common\components\RegularExpression;
+use frontend\controllers\StudentController;
 use frontend\models\Warning;
-use Yii;
 use yii\web\Controller;
 
 class TestController extends Controller
@@ -24,6 +23,7 @@ class TestController extends Controller
      */
     public function actionIndex(){
 
+//        var_dump(\Yii::$app->request->get()['r']);exit;
 //        $list = Warning::find()->asArray()->all();
 //
 //        return ['list' => $list];
@@ -100,36 +100,9 @@ class TestController extends Controller
         echo 111;exit;
     }
 
-    public function  actionRun(){
-        var_dump(Yii::getVersion());exit;
-        //得到
-        //http://huangdingbo.work/school/api/web/index.php?r=test/run
-        $str = 'http://huangdingbo.work/school/api/web/test/run?id=1&type=2';
-
-        $patter = '/(.*)web\/(.*)\?(.*)/';
-
-        $res = RegularExpression::match($patter,$str);
-
-        $url = $res[1] . 'web/index.php?r=' . $res[2] .'&' .$res[3];
-
-        var_dump($url);exit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public function actionH(){
+        echo 11;
+        print_r(get_class_methods(new StudentController('','','')));exit;
     }
 
 }

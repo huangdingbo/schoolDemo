@@ -22,17 +22,17 @@ class RbacItemController extends CommonController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
 
     /**
      * Lists all RbacItem models.
@@ -73,8 +73,15 @@ class RbacItemController extends CommonController
 
         $model->type = '2';
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index','is_rout' => '1']);
+        if ($model->load(Yii::$app->request->post())) {
+            $name = RbacItem::findOne(['name' => $model->name]);
+            if ($name){
+                Yii::$app->session->setFlash('warning',$name->name.'已经存在!!!');
+                return $this->redirect(['index','is_rout' => '1']);
+            }
+            if ($model->save()){
+                return $this->redirect(['index','is_rout' => '1']);
+            }
         }
 
         return $this->render('create', [
@@ -143,5 +150,6 @@ class RbacItemController extends CommonController
 
         return $this->render('rule',['model' => $model]);
     }
+
 
 }

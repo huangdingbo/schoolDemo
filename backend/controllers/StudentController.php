@@ -10,6 +10,7 @@
  *
  */
 namespace backend\controllers;
+use backend\models\GeneralName;
 use yii\db\Query;
 use yii\web\Controller;
 
@@ -96,6 +97,40 @@ class StudentController extends Controller
         ],
     ];
     public function actionIndex(){
-        echo 111;
+        //3个年级，每个年级10个班，一个班50人
+        $studentInfo = array();
+
+        foreach (static::$config['id'] as $item){ //年级
+
+            for ($i = 0;$i < 10;$i++){ //班级
+
+                $classKey = ($i+1) < 10 ? '0'.($i+1) : $i+1;
+
+                for ($j = 0;$j < 50;$j++){ //人
+
+                    $personKey = ($j+1) < 10 ? '0'.($j+1) : $j+1;
+
+                    $studentInfo['student_id'] = $item . $classKey . $personKey;
+                    $studentInfo['test_id'] = $item . $classKey . $personKey;
+                    $studentInfo['name'] = (new GeneralName())->getName();
+                    $studentInfo['sex'] = rand('1','2');
+                    $studentInfo['born_time'] = '1999-01-01';
+                    $studentInfo['grade'] = $item;
+                    $studentInfo['banji'] = $i + 1;
+                    $studentInfo['duty'] = rand('1','5');
+                    $studentInfo['home_address'] = '四川省成都市都江堰市成都东软学院';
+                    $studentInfo['admission_time'] = $item . '-09-01';
+                    $studentInfo['political_landscape'] = rand('1','2');
+                    $studentInfo['pic'] = 'http://huangdingbo.work/school/frontend/web/upload/student.png';
+                    $studentInfo['type'] = ($i+1) <= 5 ? '1' : '0';
+                    $studentInfo['grade_class'] = $item . $classKey;
+                    $studentInfo['insert_time'] = date('Y-m-d H:i:s',time());
+                    $studentInfo['update_time'] = date('Y-m-d H:i:s',time());
+                    \Yii::$app->db->createCommand()->insert('student',$studentInfo)->execute();
+                }
+            }
+        }
+
+       echo  'ok';exit;
     }
 }

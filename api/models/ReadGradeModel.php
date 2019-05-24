@@ -13,6 +13,7 @@ use frontend\models\Class0;
 use frontend\models\Score;
 use frontend\models\Test;
 use yii\base\Model;
+use yii\web\ForbiddenHttpException;
 
 class ReadGradeModel extends Model
 {
@@ -22,13 +23,12 @@ class ReadGradeModel extends Model
      */
     public static function getTestList($type){
         $query = Test::find()->leftJoin('grade','grade.id = test.grade_num')
+            ->leftJoin('wire','test.test_num = wire.test_num')
             ->select('test.test_name,test.test_num,grade.the,type')
-            ->where(['test.status'=>'2'])
+            ->where(['test.status'=>'2','type' => $type])
             ->orderBy('test.test_num desc,test.insert_time desc')
             ->asArray();
-        if ($type){
-            $query->andWhere(['type' => $type]);
-        }
+
         return $query -> all();
     }
 
@@ -70,6 +70,9 @@ class ReadGradeModel extends Model
      */
     public static function getOnlineData($testNum,$type){
         $wireModel = CommonModel::getTestWire($testNum);
+        if (!$wireModel){
+            throw new ForbiddenHttpException('未划线');
+        }
         $totalNum = CockpitModel::getTestStudentNum($testNum);
         if ($type == 1){
             $zhongBenNum = $wireModel->zhongben_num;
@@ -88,10 +91,14 @@ class ReadGradeModel extends Model
             ];
         }else{
             //所有班级
-            $classList = Class0::find()->select('name as banji')
-                ->orderBy('id asc')
-                ->asArray()
-                ->all();
+            $query = Class0::find()->select('name as banji')->orderBy('id asc');
+            $testType = Test::findOne(['test_num' => $testNum]);
+            if ($testType->type == 1){
+                $query->andWhere(['<=','id','5']);
+            }else{
+                $query->andWhere(['>=','id','6']);
+            }
+            $classList = $query->asArray()->all();
             $list = array();
             foreach ($classList as &$aitem){
                 $list[] = array_merge(static::getClassOnline($testNum,$aitem['banji']),$aitem);
@@ -193,7 +200,7 @@ class ReadGradeModel extends Model
         //参考人数
         $studentNum = self::getPartNum($testNum,$type,$filed);
 
-        return (string)(round(($num / $studentNum),'2')) ;
+        return $studentNum == 0 ? '0' : (string)(round(($num / $studentNum),'2')) ;
     }
 
 

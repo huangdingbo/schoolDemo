@@ -19,15 +19,14 @@ class MyController extends Controller
 
     public function behaviors()
     {
-
         return ArrayHelper::merge([
             [
                 'class' => Cors::className(),
                 'cors' => [
-                    'Access-Control-Allow-Origin' => ['*'],
+                    'Origin' => ['*'],
                     'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                     'Access-Control-Request-Headers' => ['*'],
-                    'Access-Control-Allow-Credentials' => true
+                    'Access-Control-Allow-Credentials' => false
                 ],
             ],
         ], parent::behaviors());

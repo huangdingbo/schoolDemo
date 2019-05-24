@@ -1,6 +1,7 @@
 <?php
 
 use kartik\date\DatePicker;
+use kartik\datetime\DateTimePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use \frontend\models\TaskToolModel;
@@ -23,11 +24,11 @@ use \frontend\models\TaskToolModel;
 
     <?= $form->field($model, 'info')->textInput(['maxlength' => true])->label('任务信息(间隔执行填写秒数，一次执行不填，指定时间执行填H:i:s)') ?>
 
-    <?= $form->field($model, 'start_time')->widget(DatePicker::classname(), [
+    <?= $form->field($model, 'start_time')->widget(datetimepicker::classname(), [
         'options' => ['placeholder' => '请选择任务开始时间'],
         'pluginOptions' => [
 //            'autoclose' => true,
-            'format' => 'yyyy-mm-dd',
+            'format' => 'yyyy-mm-dd hh:ii:00',
             'todayHighlight' => true
         ]
     ]); ?>

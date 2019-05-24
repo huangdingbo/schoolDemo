@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('创建任务', ['create'], ['class' => 'btn btn-success']) ?>
         <button id="todayLog-modal" type="button" class="btn btn-info" data-toggle="modal" data-target=".bs-example-modal-lg">今日运行日志</button>
+        <?= Html::a('清除日志', ['clean'], ['class' => 'btn btn-warning']) ?>
     </p>
 
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">

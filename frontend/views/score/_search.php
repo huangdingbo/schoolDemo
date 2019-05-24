@@ -54,7 +54,7 @@ use kartik\select2\Select2;
             </td>
             <td><?php
                 $location = \common\models\config::getLocationMap();
-                $allLoc = ['届' => '全部考场'];
+                $allLoc = ['届' => '全部位置'];
                 $newLoc = array_merge($allLoc,$location);
                 echo $form->field($model, 'location')->widget(Select2::classname(), [
                     'data' => $newLoc,

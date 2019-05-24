@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use console\lib\WriteLogTool;
 use console\models\TaskModel;
 use console\models\ToolModel;
+use frontend\models\TaskLog;
 use Yii;
 use frontend\models\Task;
 use frontend\models\TaskSearch;
@@ -151,6 +152,19 @@ class TaskController extends FrontendController
         $todayLog = ToolModel::outputLog();
 
         return $this->renderAjax('today',['todayLog' => $todayLog]);
+    }
+
+    public function actionClean(){
+        $file = \Yii::getAlias('@console') . '/runtime/' .date('Ymd') . '/'.'taskLog.txt';
+
+        if (file_exists($file)){
+            file_put_contents($file,'');
+        }
+
+        TaskLog::deleteAll();
+
+        Yii::$app->session->setFlash('success','日志清除成功!!!');
+        return $this->redirect(['index']);
     }
 
 }

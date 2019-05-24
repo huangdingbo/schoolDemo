@@ -25,10 +25,14 @@ class ReadGradeController extends MyController
         if (!$type){
             throw new ForbiddenHttpException('缺少类型');
         }
+        if ($type == 2){
+            $type = '0';
+        }
+
         $testList = ReadGradeModel::getTestList($type);
         foreach ($testList as &$aitem){
             $aitem['type'] = $aitem['type'] == 1 ? '理科' : '文科';
-            $aitem['name'] =  $aitem['type'] .'-'. $aitem['the'].'届-'.$aitem['test_name'];
+            $aitem['name'] =  $aitem['type'] .'-'.$aitem['test_name'];
         }
         $list = array();
         foreach ($testList as $key => $item){
@@ -62,6 +66,10 @@ class ReadGradeController extends MyController
         }
         if (!$type){
             throw new ForbiddenHttpException('缺少类型');
+        }
+
+        if ($type == 2){
+            $type = '0';
         }
 
         $fidels = ReadGradeModel::NumConfig($type);
@@ -170,6 +178,9 @@ class ReadGradeController extends MyController
         }
         if (!$type){
             throw new ForbiddenHttpException('缺少类型,1理科2文科');
+        }
+        if ($type == 2){
+            $type = '0';
         }
         //本次考试各科均分
         $currentTestList = ReadGradeModel::getAvgScoreByCourse($testNum,$type);

@@ -3,38 +3,35 @@
 namespace frontend\controllers;
 
 use frontend\models\GradeClass;
-use frontend\models\GradeClassSearch;
 use Yii;
 use frontend\models\Course;
 use frontend\models\CourseSearch;
-use yii\base\ErrorException;
-use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CourseController implements the CRUD actions for Course model.
  */
 class CourseController extends CommonController
 {
-    protected $rbacNeedCheckActions = ['create','delete',];
+    public $enableCsrfValidation = false;
+//    protected $rbacNeedCheckActions = ['create','delete',];
 
     protected $mustlogin = ['create','delete','index','view'];
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
 
     /**
      * Lists all Course models.

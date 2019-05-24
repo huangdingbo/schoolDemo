@@ -56,6 +56,8 @@ class TaskModel extends ActiveRecord
 
     const TASK_IS_KILLED = 1; //进程被杀死
 
+    const TASK_IS_NOTKILLED = 0; //进程被杀死
+
     const TASK_NOT_START = 0; //任务还未执行
 
     /**
@@ -153,7 +155,8 @@ class TaskModel extends ActiveRecord
      */
     public function checkNeedRunTask(){
         try{
-            $needRunTasks = self::find()->where(['!=','status',self::RUNNING_FAILED])->andWhere(['!=','is_kill',self::TASK_IS_KILLED])->andWhere(['!=','status',self::RUNNING])->all();
+            $needRunTasks = self::find()->andWhere(['!=','status',self::RUNNING])->all();
+
             if ($needRunTasks){
                 foreach ($needRunTasks as $task) {
                     $now = date('Y-m-d H:i:s',time());
@@ -223,7 +226,7 @@ class TaskModel extends ActiveRecord
             if (preg_match('/^http/i',$task->program)){
                 $commond = "wget $task->program";
             }else{
-                $commond = "php /data/websites/yii/test/yii  $task->program";
+                $commond = "php /data/websites/yii/school/yii  $task->program";
             }
             $runOnceProcess = new ProcessTool($commond);
             $pid = $runOnceProcess->getPid();

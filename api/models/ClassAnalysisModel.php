@@ -87,7 +87,14 @@ class ClassAnalysisModel extends  Modal
    }
 
    public static function getAvgRankForClass($testNum,$type){
-       $classList = Class0::find()->select('name')->asArray()->all();
+       $testType = Test::findOne(['test_num' => $testNum]);
+       $query = Class0::find()->select('name');
+       if ($testType->type == 1){
+           $query->andWhere(['<=','id','5']);
+       }else{
+           $query->andWhere(['>=','id','6']);
+       }
+       $classList = $query->asArray()->all();
        foreach ($classList as &$aitem){
            //每次考试参考班级人数
            $scoreList = Score::find()->select('avg(total) as avg')
@@ -131,13 +138,20 @@ class ClassAnalysisModel extends  Modal
         return $classList;
     }
 
-    public static function getStableForClass($grade){
+    public static function getStableForClass($grade,$testType){
        $testList = Test::find()->select('test_name as testName,test_num as testNum')
            ->where(['grade_num' => $grade])
            ->orderBy('insert_time asc')
            ->asArray()
            ->all();
-       $classList = Class0::find()->select('name')->asArray()->all();
+
+        $query = Class0::find()->select('name');
+        if ($testType == 1){
+            $query->andWhere(['<=','id','5']);
+        }else{
+            $query->andWhere(['>=','id','6']);
+        }
+       $classList =$query->asArray()->all();
        foreach ($classList as &$value){
            foreach ($testList as &$aitem){
                $wire = (Wire::findOne(['test_num' => $aitem['testNum']]))->benke_wire;

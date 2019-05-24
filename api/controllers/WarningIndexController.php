@@ -11,6 +11,7 @@ namespace api\controllers;
 
 use api\models\ReadGradeModel;
 use api\models\WarningIndexModel;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 
@@ -33,6 +34,10 @@ class WarningIndexController extends MyController
         }
         if (!$studentType){
             throw new ForbiddenHttpException('缺少类型,1理科2文科');
+        }
+
+        if ($studentType == 2){
+            $studentType = '0';
         }
 
         $list = WarningIndexModel::getWarningNum($testNum,$type,$studentType,$grade,$class);
@@ -59,7 +64,11 @@ class WarningIndexController extends MyController
      * 班级列表
      */
     public function actionClassList(){
-        $list = WarningIndexModel::getClassList();
+        $postData = \Yii::$app->request->post();
+
+        $type = isset($postData['type']) ? $postData['type'] : '1';
+
+        $list = WarningIndexModel::getClassList($type);
 
         return [
             'list' => $list
@@ -70,7 +79,12 @@ class WarningIndexController extends MyController
         $postData = \Yii::$app->request->post();
         $grade =  isset($postData['grade']) ? $postData['grade'] : '';
         $type = isset($postData['type']) ? $postData['type'] : '';
+        if ($type == 2){
+            $type = '0';
+        }
         $list = WarningIndexModel::getHighRiskStudent($grade,$type);
+
+        ArrayHelper::multisort($list, 'warningNum', SORT_DESC);
         return [
             'list' => $list
         ];
@@ -80,6 +94,9 @@ class WarningIndexController extends MyController
         $postData = \Yii::$app->request->post();
         $grade =  isset($postData['grade']) ? $postData['grade'] : '';
         $type = isset($postData['type']) ? $postData['type'] : '';
+        if ($type == 2){
+            $type = '0';
+        }
         $list = WarningIndexModel::getWarningTypeData($grade,$type);
 
         return [
@@ -107,6 +124,9 @@ class WarningIndexController extends MyController
         if (!$studentType){
             throw new ForbiddenHttpException('缺少类型,1理科2文科');
         }
+        if ($studentType == 2){
+            $studentType = '0';
+        }
 
         $list = WarningIndexModel::getWarningDevelopList($grade,$class,$type,$studentType);
 
@@ -122,6 +142,7 @@ class WarningIndexController extends MyController
         $type = isset($postData['type']) ? $postData['type'] : '';
         $studentType = isset($postData['studentType']) ? $postData['studentType'] : '';
         $test = isset($postData['test']) ? $postData['test'] : '';
+
         if (!$grade){
             throw new ForbiddenHttpException('缺少年级');
         }
@@ -130,6 +151,10 @@ class WarningIndexController extends MyController
         }
         if (!$type){
             throw new ForbiddenHttpException('缺少预警类型');
+        }
+
+        if ($studentType == 2){
+            $studentType = '0';
         }
 
         $list = WarningIndexModel::getWarningStatisticalList($grade,$class,$type,$studentType,$test);
@@ -150,11 +175,13 @@ class WarningIndexController extends MyController
         $status = isset($postData['status']) ? $postData['status'] : '';
         $nameStr = isset($postData['nameStr']) ? $postData['nameStr'] : '';
 
-        $list = WarningIndexModel::getWarningAllList($grade,$class,$test,$type,$studentType,$course,$status,$nameStr);
+        //分页
+        $size =  isset($postData['size']) ? $postData['size'] : 10;
+        $offset = isset($postData['offset']) ? $postData['offset'] : 0;
 
-        return [
-            'list' => $list
-        ];
+        $data = WarningIndexModel::getWarningAllList($grade,$class,$test,$type,$studentType,$course,$status,$nameStr,$offset,$size);
+
+        return $data;
     }
 
     public function actionWarningDetail(){
@@ -177,6 +204,9 @@ class WarningIndexController extends MyController
         }
         if (!$grade){
             throw new ForbiddenHttpException('缺少年级');
+        }
+        if ($type == 2){
+            $type = '0';
         }
         $list = WarningIndexModel::getTestList($type,$grade);
         return $list;

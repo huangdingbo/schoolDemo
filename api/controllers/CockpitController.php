@@ -53,12 +53,14 @@ class CockpitController extends MyController
 
     //龙虎榜
     public function actionRankPic(){
-        //最新考试
-        $newTest = CommonModel::getNewTest();
+        $postData = \Yii::$app->request->post();
+
+        $newTest = isset($postData['test']) ?  $postData['test'] : CommonModel::getLinedNewTest()['test_num'];
+
         //列表
         $list = Score::find()->leftJoin('student','student.student_id = score.student_id')
             ->select('score.id,score.name,score.grade,score.banji,score.total,score.school_rank,student.pic')
-            ->where(['test_num' => $newTest['test_num']])
+            ->where(['test_num' => $newTest])
             ->orderBy('score.school_rank asc')
             ->limit(20)
             ->asArray()
@@ -79,16 +81,31 @@ class CockpitController extends MyController
         $selectStr = CommonModel::$selectStrForType[$type].',total,class_rank,school_rank';
         $item = Score::find()->select($selectStr)->where(['id' => $id])->asArray()->one();
 
+        $map = CommonModel::$studentInfoMap;
+
+        $list = array();
+
+        foreach ($item as $key => $value){
+            $list[] = [
+                'name' => $map[$key],
+                'value' => $value,
+            ];
+        }
+
+
         return [
-            'item' => $item
+            'list' => $list,
         ];
     }
     //本次考试各班本科概况
     public function actionRegularMap(){
-        $newTest = CommonModel::getNewTest();
-        $regularWire = (Wire::findOne(['test_num' => $newTest['test_num']]))->benke_wire;
+        $postData = \Yii::$app->request->post();
+
+        $newTest = isset($postData['test']) ?  $postData['test'] : CommonModel::getLinedNewTest()['test_num'];
+
+        $regularWire = (Wire::findOne(['test_num' => $newTest]))->benke_wire;
         $list = Score::find()
-            ->where(['test_num' => $newTest['test_num']])
+            ->where(['test_num' => $newTest])
             ->andFilterWhere(['>=','total',$regularWire])
             ->select('count(*) as value,banji as name')
             ->groupBy('banji')
@@ -96,7 +113,7 @@ class CockpitController extends MyController
             ->asArray()
             ->all();
         $totalNum =  Score::find()
-            ->where(['test_num' => $newTest['test_num']])
+            ->where(['test_num' => $newTest])
             ->andFilterWhere(['>','total',$regularWire])
             ->count();
         foreach ($list as &$aitem){
@@ -109,10 +126,13 @@ class CockpitController extends MyController
     }
     //本次考试重本分布
     public function actionWeighDistribution(){
-        $newTest = CommonModel::getNewTest();
-        $weightWire = (Wire::findOne(['test_num' => $newTest['test_num']]))->zhongben_wire;
+        $postData = \Yii::$app->request->post();
+
+        $newTest = isset($postData['test']) ?  $postData['test'] : CommonModel::getLinedNewTest()['test_num'];
+
+        $weightWire = (Wire::findOne(['test_num' => $newTest]))->zhongben_wire;
         $list = Score::find()
-            ->where(['test_num' => $newTest['test_num']])
+            ->where(['test_num' => $newTest])
             ->andFilterWhere(['>=','total',$weightWire])
             ->select('count(*) as value,banji as name')
             ->groupBy('banji')
@@ -120,7 +140,7 @@ class CockpitController extends MyController
             ->asArray()
             ->all();
         $totalNum =  Score::find()
-            ->where(['test_num' => $newTest['test_num']])
+            ->where(['test_num' => $newTest])
             ->andFilterWhere(['>','total',$weightWire])
             ->count();
         foreach ($list as &$aitem){
@@ -142,15 +162,18 @@ class CockpitController extends MyController
     }
     //底部轮子
     public function actionWheel(){
-        //最新考试
-        $newTest = CommonModel::getNewTest();
-        $model = Wire::findOne(['test_num' => $newTest['test_num']]);
+        $postData = \Yii::$app->request->post();
+
+        $newTest = isset($postData['test']) ?  $postData['test'] : CommonModel::getLinedNewTest()['test_num'];
+
+        $model = Wire::findOne(['test_num' => $newTest]);
+
         //本科上线人数
         $benkeNum = $model->benke_num;
         //重本上线人数
         $zhongbenNum = $model->zhongben_num;
         //本次考试总人数
-        $totalNum = CockpitModel::getTestStudentNum($newTest['test_num']);
+        $totalNum = CockpitModel::getTestStudentNum($newTest);
         //本科上线率
         $benkeRatio = (string)(round(($benkeNum / $totalNum)*100,'0')) ;
         //重本占比
@@ -187,5 +210,19 @@ class CockpitController extends MyController
         return [
             'list' => $list
         ];
+    }
+
+    /**
+     *已经划线的考试列表
+     */
+
+    public function actionLinedTest(){
+        $list = Wire::find()->leftJoin('test','wire.test_num = test.test_num')
+            ->select('test.test_num as value,test.test_name as name')
+            ->orderBy('wire.insert_time desc')
+            ->asArray()
+            ->all();
+
+        return ['list' => $list];
     }
 }

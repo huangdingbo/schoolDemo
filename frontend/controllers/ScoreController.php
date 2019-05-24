@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use ciniran\excel\SaveExcel;
 use common\models\config;
 use frontend\models\Student;
+use frontend\models\Test;
 use Yii;
 use frontend\models\Score;
 use frontend\models\ScoreSearch;
@@ -22,21 +23,21 @@ class ScoreController extends CommonController
 {
     protected $rbacNeedCheckActions = ['update','delete'];
 
-    protected $mustlogin = ['update','delete','index','view'];
+//    protected $mustlogin = ['update','delete','index','view'];
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'verbs' => [
+//                'class' => VerbFilter::className(),
+//                'actions' => [
+//                    'delete' => ['POST'],
+//                ],
+//            ],
+//        ];
+//    }
 
     /**
      * Lists all Score models.
@@ -44,12 +45,13 @@ class ScoreController extends CommonController
      */
     public function actionIndex()
     {
-//        if (!Yii::$app->user->can('indexScore')){
-//            throw new ForbiddenHttpException(Yii::$app->params['perMessage']);
-//        }
+
         $searchCondition = Yii::$app->request->queryParams; //获得搜索参数
 
         $searchModel = new ScoreSearch();
+
+            //默认类型为理科
+            $searchModel->type = '1';
 
         $dataProvider = $searchModel->search($searchCondition);
 
@@ -85,6 +87,7 @@ class ScoreController extends CommonController
 
             $excel->modelsToExcel();
         }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -130,7 +133,10 @@ class ScoreController extends CommonController
         //更新成绩表
         $model = new Score();
         $model->insertScoreData($list);
-        //更新总分、校名、班名
+        /**
+         *特别慢
+         * 更新总分、校名、班名
+         */
         $testNum = Yii::$app->request->get('test_num');
         $model->calculateRank($testNum);
 

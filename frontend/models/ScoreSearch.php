@@ -63,10 +63,6 @@ class ScoreSearch extends Score
             return $dataProvider;
         }
 
-        //默认理科
-        if ($this->type == ''){
-            $this->type = 1;
-        }
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
@@ -97,7 +93,6 @@ class ScoreSearch extends Score
             ->andFilterWhere(['like', 'test_room', $this->test_room])
             ->andFilterWhere(['like', 'test_num', $this->test_num])
             ->andFilterWhere(['like', 'location', $this->location]);
-
 
         return $dataProvider;
     }

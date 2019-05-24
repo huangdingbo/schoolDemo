@@ -5,11 +5,11 @@ namespace console\controllers;
 
 
 use common\components\RbacCheck;
+use console\lib\ConsoleBaseController;
+use console\lib\WriteLogTool;
 use frontend\models\Adminuser;
-use yii\console\Controller;
-use yii\helpers\Console;
 
-class RedisCacheController extends Controller
+class RedisCacheController extends ConsoleBaseController
 {
     public function actionUpdate(){
 
@@ -21,9 +21,8 @@ class RedisCacheController extends Controller
                 RbacCheck::getAuthList($item['id'],'1');
             }
         }catch (\Exception $e){
-            var_dump($e);exit;
+            WriteLogTool::writeLog($e->getMessage(),$this->action->getUniqueId());
         }
-
         return true;
     }
 }

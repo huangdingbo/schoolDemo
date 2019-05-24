@@ -26,6 +26,11 @@ class CommonModel extends Model
         return $newTest;
     }
 
+    //获取已经划线的最新考试
+    public static function getLinedNewTest(){
+        return Wire::find()->select('test_num')->orderBy('insert_time desc')->asArray()->one();
+    }
+
     //获取本年度各年级的本科上线情况
     public static function getUndergraduateOnline(){
         $wire = 425;
@@ -97,7 +102,22 @@ class CommonModel extends Model
 
     public static $selectStrForType = [
         '1' => 'chinese,math,english,physics,chemistry,biology',
-        '2' => 'chinese,math,english,politics,history	geography',
+        '0' => 'chinese,math,english,politics,history,geography',
+    ];
+
+    public static $studentInfoMap = [
+        'physics' => '物理',
+        'chemistry' => '化学',
+        'biology' => '生物',
+        'politics' => '政治',
+        'history' => '历史',
+        'geography' => '地理',
+        'chinese' => '语文',
+        'math' => '数学',
+        'english' => '外语',
+        'class_rank' => '班级排名',
+        'school_rank' => '年级排名',
+        'total' => '总分',
     ];
 
     public static function getLastTestNum($testNum){

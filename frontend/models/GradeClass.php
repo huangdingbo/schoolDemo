@@ -115,7 +115,7 @@ class GradeClass extends \yii\db\ActiveRecord
         $arr = array();
         foreach ($data as $item){
             $k = $item['week_num'].$item['section_num'];
-            $arr[$k] = config::$courseConfig[$item['group']].'('.$item['name'].')';
+            $arr[$k] = isset(config::$courseConfig[$item['group']]) ? config::$courseConfig[$item['group']].'('.$item['name'].')' : '';
         }
        return $arr;
     }
