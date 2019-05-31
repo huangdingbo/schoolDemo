@@ -16,13 +16,30 @@ class MusicController extends  Controller
     public function actionIndex(){
 
         $getData = \Yii::$app->request->post();
-        $keyword = isset($getData['keyword']) ? $getData['keyword'] : '我曾';
+        $postData = \Yii::$app->request->get();
+        $params = array_merge($getData,$postData);
 
-        $list = CurlTool::callApi('http://huangdingbo.work/school/api/web/music/get-list',['keyword' => $keyword],CurlTool::GET_TYPE)['data']['list'];
+        $keyword = isset($params['keyword']) ? $params['keyword'] : '我曾';
+        $page = isset($params['page']) ? $params['page'] : '1';
 
-        $list = $this->dealList($list);
 
-        return $this->render('index',['list' => json_encode($list)]);
+        $data = CurlTool::callApi('http://huangdingbo.work/school/api/web/music/get-list',['keyword' => $keyword,'page' => $page],CurlTool::GET_TYPE);
+        if ($data['data']['hasMore'] == false){
+            $page = '1';
+            $data = CurlTool::callApi('http://huangdingbo.work/school/api/web/music/get-list',['keyword' => $keyword,'page' => $page],CurlTool::GET_TYPE);
+            $data['data']['page'] = '2';
+        }
+        $pager = array();
+        $pager['nextPage'] = $data['data']['page'];
+        $pager['totalPage'] = $data['data']['totalPage'];
+        $pager['currentPage'] = $page;
+        $pager['hasMore'] = $data['data']['hasMore'];
+        $pager['keyword'] = $keyword;
+
+
+        $list = $this->dealList($data['data']['list']);
+
+        return $this->render('index',['list' => json_encode($list),'pager' => $pager]);
     }
 
     private function dealList($list)
@@ -56,7 +73,7 @@ class MusicController extends  Controller
 
         $data = json_decode($data,true);
 
-        $url = isset($data['list']['imgUrl']) ? $data['list']['imgUrl'] : '';
+        $url = isset($data['list']['imgUrl']) ? $data['list']['imgUrl'] : 'http://huangdingbo.work/school/frontend/web/img/music.png';
 
         return $url;
     }

@@ -1,5 +1,9 @@
 <?php
-//var_dump($list);exit;
+use \yii\helpers\Url;
+
+/**
+ * @pagers
+ */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -49,8 +53,21 @@
 </div>
 <ul id="playlist"></ul>
 <!--歌词-->
-<ul id="playlist">
-    <li style="text-align: center"><a class="btn btn-success" href="<?=\yii\helpers\Url::to(['site/index'])?>" target="_blank">开始工作</a></li>
+<ul id="playlist" style="overflow: hidden">
+    <?php if ($pager['currentPage'] <= '1'){?>
+        <div style="float: left"><a href="#" class="btn btn-default">上一页</a></div>
+    <?php }else{?>
+        <div style="float: left"><a href="<?=Url::to(['music/index','keyword'=>$pager['keyword'],'page'=>$pager['currentPage']-1])?>" class="btn btn-warning">上一页</a></div>
+    <?php } ?>
+
+    <div style="float: left;margin-left: 100px;"><a class="btn btn-success" href="<?=Url::to(['site/index'])?>" target="_blank">开始工作</a></div>
+
+    <?php if ($pager['currentPage'] >= $pager['totalPage']){?>
+        <div style="float: right"><a href="#" class="btn btn-default">下一页</a></div>
+    <?php }else{?>
+        <div style="float: right"><a href="<?=Url::to(['music/index','keyword'=>$pager['keyword'],'page'=>$pager['nextPage']])?>" class="btn btn-warning">下一页</a></div>
+    <?php } ?>
+
 </ul>
 <script type="text/javascript">
     var arr = eval(<?=$list?>)
