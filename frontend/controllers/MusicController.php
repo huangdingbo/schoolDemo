@@ -45,8 +45,8 @@ class MusicController extends  Controller
     private function dealList($list)
     {
         foreach ($list as &$value) {
-            $value['title'] = $value['album_name'];
-            $value['artist'] = $value['songname'];
+            $value['title'] = $value['songname'];
+            $value['artist'] = $value['album_name'];
             $value['album'] = $value['singername'];
             $value['cover'] = $this->getImgUrl($value['hash']);
             $value['mp3'] = $this->getSongUrl($value['hash']);
