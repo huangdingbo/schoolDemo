@@ -12,8 +12,11 @@ namespace api\controllers;
 use common\components\RedisCache;
 use common\components\RegularExpression;
 use frontend\controllers\StudentController;
+use frontend\models\Student;
 use frontend\models\Warning;
+use yii\base\Exception;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 
 class TestController extends Controller
 {
@@ -100,9 +103,94 @@ class TestController extends Controller
         echo 111;exit;
     }
 
-    public function actionH(){
-        echo 11;
-        print_r(get_class_methods(new StudentController('','','')));exit;
+    /**
+     * @return int
+     * @throws ForbiddenHttpException
+     * 获取数据库第几条数据的id
+     */
+    public function actionMiddle(){
+
+        $num = \Yii::$app->request->get('num');
+
+        if (!$num){
+            throw new ForbiddenHttpException('请传要获取数据库第几条数据!');
+        }
+
+       return $this->getNumId($num);
     }
+
+    /**
+     * @param $num
+     * @return int
+     * 获取id
+     */
+    private function getNumId($num){
+        //查询最小的id
+        $minId = Student::find()->select('min(id) as minId')->asArray()->one()['minId'];
+
+        //假设id连续
+        $resId = $minId + $num;
+
+        //判断是否有50条
+        $id = $this->check($resId,$num);
+
+        return $id;
+    }
+
+    /***
+     * @param $id
+     * @param $num
+     * @return int
+     * 递归检查
+     */
+    private function check($id,$num){
+
+        $total = Student::find()->select('count(*) as num')->where(['<','id',$id])->asArray()->one()['num'];
+
+        if ($total < $num){
+
+            $id += 1;
+
+            $this->check($id,$num);
+        }
+
+        return $id;
+    }
+
+
+
+    public function actionError(){
+        try{
+            new my();
+        }catch (Exception $e){
+            echo 111;
+            var_dump($e->getMessage());exit;
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

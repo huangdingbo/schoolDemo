@@ -30,9 +30,9 @@ $pic = isset($userModel) ? $userModel->pic : Yii::$app->request->getHostInfo().'
         </div>
 
         <!-- search form -->
-        <form action="#" method="get" class="sidebar-form">
+        <form  action="http://huangdingbo.work/school/frontend/web/index.php?r=music/index" method="post" class="sidebar-form">
             <div class="input-group">
-                <input type="text" name="q" class="form-control"  style="height: 25px" placeholder="搜索..."/>
+                <input type="text" name="keyword" class="form-control"  style="height: 25px" placeholder="听我想听的歌..."/>
               <span class="input-group-btn">
                 <button type='submit' name='search' id='search-btn' class="btn btn-flat" style="height: 25px;
     line-height: 0;"><i class="fa fa-search"></i>

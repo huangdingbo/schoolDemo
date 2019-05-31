@@ -17,6 +17,7 @@ use yii\web\ForbiddenHttpException;
 
 class ClassAnalysisController extends  MyController
 {
+
     /**
      * @return array
      * 学生构成分析
